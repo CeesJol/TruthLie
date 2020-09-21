@@ -106,7 +106,7 @@ const YesIntent = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
     sessionAttributes.gameState = 'STARTED';
-    sessionAttributes.guessNumber = Math.floor(Math.random() * 101);
+    sessionAttributes.lie = 2;
 
     return handlerInput.responseBuilder
       .speak(requestAttributes.t('YES_MESSAGE'))
@@ -163,9 +163,9 @@ const UnhandledIntent = {
   },
 };
 
-const NumberGuessIntent = {
+const StatementPickIntent = {
   canHandle(handlerInput) {
-    // handle numbers only during a game
+    // handle statement picks only during a game
     let isCurrentlyPlaying = false;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
@@ -184,29 +184,28 @@ const NumberGuessIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const guessNum = parseInt(Alexa.getSlotValue(handlerInput.requestEnvelope, 'number'), 10);
-    const targetNum = sessionAttributes.guessNumber;
+    const pickedStatement = parseInt(Alexa.getSlotValue(handlerInput.requestEnvelope, 'number'), 10);
+		const targetStatement = sessionAttributes.lie;
+		
+		sessionAttributes.gamesPlayed += 1;
+		sessionAttributes.gameState = 'ENDED';
+		attributesManager.setPersistentAttributes(sessionAttributes);
+		await attributesManager.savePersistentAttributes();
     
-    if (guessNum > targetNum) {
+    if (pickedStatement !== targetStatement) {
+			// Incorrect pick
       return handlerInput.responseBuilder
-        .speak(requestAttributes.t('TOO_HIGH_MESSAGE', guessNum.toString()))
-        .reprompt(requestAttributes.t('TOO_HIGH_REPROMPT'))
+        .speak(requestAttributes.t('INCORRECT_MESSAGE', pickedStatement.toString()))
+        .reprompt(requestAttributes.t('INCORRECT_REPROMPT'))
         .getResponse();
-    } else if (guessNum < targetNum) {
+    } else if (pickedStatement === targetStatement) {
+			// Correct pick
       return handlerInput.responseBuilder
-        .speak(requestAttributes.t('TOO_LOW_MESSAGE', guessNum.toString()))
-        .reprompt(requestAttributes.t('TOO_LOW_REPROMPT'))
-        .getResponse();
-    } else if (guessNum === targetNum) {
-      sessionAttributes.gamesPlayed += 1;
-      sessionAttributes.gameState = 'ENDED';
-      attributesManager.setPersistentAttributes(sessionAttributes);
-      await attributesManager.savePersistentAttributes();
-      return handlerInput.responseBuilder
-        .speak(requestAttributes.t('GUESS_CORRECT_MESSAGE', guessNum.toString()))
+        .speak(requestAttributes.t('GUESS_CORRECT_MESSAGE', pickedStatement.toString()))
         .reprompt(requestAttributes.t('CONTINUE_MESSAGE'))
         .getResponse();
-    }
+		}
+			
     return handlerInput.responseBuilder
       .speak(requestAttributes.t('FALLBACK_MESSAGE_DURING_GAME'))
       .reprompt(requestAttributes.t('FALLBACK_REPROMPT_DURING_GAME'))
@@ -309,7 +308,7 @@ exports.handler = skillBuilder
     HelpIntent,
     YesIntent,
     NoIntent,
-    NumberGuessIntent,
+    StatementPickIntent,
     FallbackHandler,
     UnhandledIntent,
   )
