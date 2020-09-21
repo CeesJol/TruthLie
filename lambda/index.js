@@ -13,6 +13,9 @@ const languageStrings = {
 }
 const AWS = require('aws-sdk');
 
+// To get a random statement
+const { getRandomStatement } = require('../statements');
+
 const LaunchRequest = {
   canHandle(handlerInput) {
     // launch requests as well as any new session, as games are not saved in progress, which makes
@@ -34,7 +37,11 @@ const LaunchRequest = {
     attributesManager.setSessionAttributes(attributes);
 
     const gamesPlayed = attributes.gamesPlayed.toString()
-    const speechOutput = requestAttributes.t('LAUNCH_MESSAGE', gamesPlayed);
+    const speechOutput = requestAttributes.t(
+      "LAUNCH_MESSAGE",
+      gamesPlayed,
+      "potato man"
+    );
     const reprompt = requestAttributes.t('CONTINUE_MESSAGE');
 
     return handlerInput.responseBuilder
@@ -105,8 +112,8 @@ const YesIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    sessionAttributes.gameState = 'STARTED';
-    sessionAttributes.lie = 2;
+		sessionAttributes.gameState = 'STARTED';
+		sessionAttributes.current = getRandomStatement();
 
     return handlerInput.responseBuilder
       .speak(requestAttributes.t('YES_MESSAGE'))
