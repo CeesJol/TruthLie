@@ -14,7 +14,7 @@ const languageStrings = {
 const AWS = require('aws-sdk');
 
 // To get a random statement
-const getRandomStatement = require("./statements");
+const { getRandomStatement } = require("./statements");
 
 const LaunchRequest = {
   canHandle(handlerInput) {
