@@ -8,7 +8,7 @@ const statements = [
 ];
 
 const getRandomStatement = () => {
-  const random = Math.floor(Math.random() * statements.length - 1);
+  const random = Math.floor(Math.random() * statements.length);
   return statements[random];
 };
 
