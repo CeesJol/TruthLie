@@ -10,8 +10,10 @@ module.exports = {
       "Statement %s is indeed a lie! %s Would you like to play again?",
     LAUNCH_MESSAGE:
       "Welcome to Two Truths and a Lie. You have played %s times. I is %s. Would you like to play?",
-    INCORRECT_MESSAGE: "%s is not a lie. %s Would you like to play again?",
-    INCORRECT_REPROMPT: "%s is not a lie. %s Would you like to play again?",
+    INCORRECT_MESSAGE:
+      "Statement %s is not a lie. %s Would you like to play again?",
+    INCORRECT_REPROMPT:
+      "Statement %s is not a lie. %s Would you like to play again?",
     CONTINUE_MESSAGE: "Say yes to play or no to quit.",
     HELP_MESSAGE:
       "I will tell you two truths and a lie, you tell me which one is a lie and I will tell you if you were right.",
@@ -20,6 +22,6 @@ module.exports = {
     YES_MESSAGE:
       "Great! Statement one is: %s Statement two is: %s And statement three is %s Now, which one do you think is a lie?",
     YES_REPROMPT:
-      "I tell you three statements and you guess which one is a lie. Statement one is: %s Statement two is: %s And statement three is %s Now, which one do you think is a lie?",
+      "I tell you three statements and you guess which one is a lie. Statement one is: %s Statement two is: %s And statement three is: %s Now, which one do you think is a lie?",
   },
 };
