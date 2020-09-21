@@ -113,12 +113,20 @@ const YesIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    sessionAttributes.gameState = 'STARTED';
-    sessionAttributes.statements = getRandomStatement();
+		sessionAttributes.gameState = 'STARTED';
+		const statements = getRandomStatement();
+    sessionAttributes.statements = statements;
 
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t('YES_MESSAGE'))
-      .reprompt(requestAttributes.t('HELP_REPROMPT'))
+      .speak(
+        requestAttributes.t(
+          "YES_MESSAGE",
+          statements.s1,
+          statements.s2,
+          statements.s3
+        )
+      )
+      .reprompt(requestAttributes.t("HELP_REPROMPT"))
       .getResponse();
   },
 };
@@ -199,18 +207,31 @@ const StatementPickIntent = {
 		sessionAttributes.gameState = 'ENDED';
 		attributesManager.setPersistentAttributes(sessionAttributes);
 		await attributesManager.savePersistentAttributes();
+		const explanation = sessionAttributes.statement.lieExplanation;
     
     if (pickedStatement !== targetStatement) {
 			// Incorrect pick
       return handlerInput.responseBuilder
-        .speak(requestAttributes.t('INCORRECT_MESSAGE', pickedStatement.toString()))
-        .reprompt(requestAttributes.t('INCORRECT_REPROMPT'))
+        .speak(
+          requestAttributes.t(
+            "INCORRECT_MESSAGE",
+            pickedStatement.toString(),
+            explanation
+          )
+        )
+        .reprompt(requestAttributes.t("INCORRECT_REPROMPT"))
         .getResponse();
     } else if (pickedStatement === targetStatement) {
 			// Correct pick
       return handlerInput.responseBuilder
-        .speak(requestAttributes.t('GUESS_CORRECT_MESSAGE', pickedStatement.toString()))
-        .reprompt(requestAttributes.t('CONTINUE_MESSAGE'))
+        .speak(
+          requestAttributes.t(
+            "GUESS_CORRECT_MESSAGE",
+            pickedStatement.toString(),
+            explanation
+          )
+        )
+        .reprompt(requestAttributes.t("CONTINUE_MESSAGE"))
         .getResponse();
 		}
 			

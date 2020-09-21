@@ -1,9 +1,10 @@
 const statements = [
   {
-    s1: "Hi",
-    s2: "Dear",
-    s3: "Friend",
-    lie: 1,
+    s1: "My favorite color is red.",
+    s2: "Potatoes are less healthy than sweet potatoes.",
+    s3: "I like trains.",
+		lie: 1,
+		lieExplanation: "Statement one was a lie: my favorite color is actually blue. Navy blue, specifically!"
   },
 ];
 
