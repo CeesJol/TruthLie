@@ -38,7 +38,7 @@ const LaunchRequest = {
 
     const gamesPlayed = attributes.gamesPlayed.toString()
     const speechOutput = requestAttributes.t("LAUNCH_MESSAGE", {
-      gamesgamesPlayed,
+      gamesPlayed,
       potato: "potato man",
     });
     const reprompt = requestAttributes.t('CONTINUE_MESSAGE');
