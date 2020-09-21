@@ -114,16 +114,16 @@ const YesIntent = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
 		sessionAttributes.gameState = 'STARTED';
-		const statements = getRandomStatement();
-    sessionAttributes.statements = statements;
+		const statement = getRandomStatement();
+    sessionAttributes.statement = statement;
 
     return handlerInput.responseBuilder
       .speak(
         requestAttributes.t(
           "YES_MESSAGE",
-          statements.s1,
-          statements.s2,
-          statements.s3
+          statement.s1,
+          statement.s2,
+          statement.s3
         )
       )
       .reprompt(requestAttributes.t("HELP_REPROMPT"))
@@ -201,7 +201,7 @@ const StatementPickIntent = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
     const pickedStatement = parseInt(Alexa.getSlotValue(handlerInput.requestEnvelope, 'number'), 10);
-		const targetStatement = sessionAttributes.statements.lie;
+		const targetStatement = sessionAttributes.statement.lie;
 		
 		sessionAttributes.gamesPlayed += 1;
 		sessionAttributes.gameState = 'ENDED';
