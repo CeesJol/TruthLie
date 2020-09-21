@@ -14,7 +14,7 @@ const languageStrings = {
 const AWS = require('aws-sdk');
 
 // To get a random statement
-// const getRandomStatement = require('../statements)')
+const getRandomStatement = require("./statements");
 
 const LaunchRequest = {
   canHandle(handlerInput) {
@@ -36,8 +36,13 @@ const LaunchRequest = {
 
     attributesManager.setSessionAttributes(attributes);
 
-    const gamesPlayed = attributes.gamesPlayed.toString();
-    const speechOutput = requestAttributes.t("LAUNCH_MESSAGE", gamesPlayed);
+		const gamesPlayed = attributes.gamesPlayed.toString();
+		const potato = "potato man";
+    const speechOutput = requestAttributes.t(
+      "LAUNCH_MESSAGE",
+      gamesPlayed,
+      potato
+    );
     const reprompt = requestAttributes.t('CONTINUE_MESSAGE');
 
     return handlerInput.responseBuilder
