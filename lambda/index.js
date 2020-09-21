@@ -36,11 +36,12 @@ const LaunchRequest = {
 
     attributesManager.setSessionAttributes(attributes);
 
-    const gamesPlayed = attributes.gamesPlayed.toString()
-    const speechOutput = requestAttributes.t("LAUNCH_MESSAGE", {
+		const gamesPlayed = attributes.gamesPlayed.toString()
+		const potato = "potato man"
+    const speechOutput = requestAttributes.t("LAUNCH_MESSAGE", 
       gamesPlayed,
-      potato: "potato man",
-    });
+      potato
+    );
     const reprompt = requestAttributes.t('CONTINUE_MESSAGE');
 
     return handlerInput.responseBuilder
