@@ -18,6 +18,8 @@ module.exports = {
     HELP_REPROMPT: "Say yes to play.",
     ERROR_MESSAGE: "Sorry, an error occurred.",
     YES_MESSAGE:
-      "Great! The statements are: %s %s %s Which one do you think is a lie?",
+      "Great! Statement one is: %s Statement two is: %s And statement three is %s Now, which one do you think is a lie?",
+    YES_REPROMPT:
+      "I tell you three statements and you guess which one is a lie. Statement one is: %s Statement two is: %s And statement three is %s Now, which one do you think is a lie?",
   },
 };

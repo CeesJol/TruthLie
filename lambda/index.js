@@ -126,7 +126,14 @@ const YesIntent = {
           statement.s3
         )
       )
-      .reprompt(requestAttributes.t("HELP_REPROMPT"))
+      .reprompt(
+        requestAttributes.t(
+          "YES_REPROMPT",
+          statement.s1,
+          statement.s2,
+          statement.s3
+        )
+      )
       .getResponse();
   },
 };
@@ -200,17 +207,21 @@ const StatementPickIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    const pickedStatement = parseInt(Alexa.getSlotValue(handlerInput.requestEnvelope, 'number'), 10);
-		const targetStatement = sessionAttributes.statement.lie;
-		
-		sessionAttributes.gamesPlayed += 1;
-		sessionAttributes.gameState = 'ENDED';
-		attributesManager.setPersistentAttributes(sessionAttributes);
-		await attributesManager.savePersistentAttributes();
-		const explanation = sessionAttributes.statement.lieExplanation;
-    
+    const pickedStatement = parseInt(
+      Alexa.getSlotValue(handlerInput.requestEnvelope, "number"),
+      10
+    );
+    const targetStatement = sessionAttributes.statement.lie;
+
+    sessionAttributes.gamesPlayed += 1;
+    sessionAttributes.gameState = "ENDED";
+    attributesManager.setPersistentAttributes(sessionAttributes);
+    await attributesManager.savePersistentAttributes();
+
+    const explanation = sessionAttributes.statement.lieExplanation;
+
     if (pickedStatement !== targetStatement) {
-			// Incorrect pick
+      // Incorrect pick
       return handlerInput.responseBuilder
         .speak(
           requestAttributes.t(
@@ -222,7 +233,7 @@ const StatementPickIntent = {
         .reprompt(requestAttributes.t("INCORRECT_REPROMPT"))
         .getResponse();
     } else if (pickedStatement === targetStatement) {
-			// Correct pick
+      // Correct pick
       return handlerInput.responseBuilder
         .speak(
           requestAttributes.t(
@@ -233,11 +244,11 @@ const StatementPickIntent = {
         )
         .reprompt(requestAttributes.t("CONTINUE_MESSAGE"))
         .getResponse();
-		}
-			
+    }
+
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t('FALLBACK_MESSAGE_DURING_GAME'))
-      .reprompt(requestAttributes.t('FALLBACK_REPROMPT_DURING_GAME'))
+      .speak(requestAttributes.t("FALLBACK_MESSAGE_DURING_GAME"))
+      .reprompt(requestAttributes.t("FALLBACK_REPROMPT_DURING_GAME"))
       .getResponse();
   },
 };
