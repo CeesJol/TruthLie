@@ -22,15 +22,15 @@ use another editor/IDE, please check out the [ASK SDK Local Debug package at npm
 
 */
 
-const net = require("net");
-const fs = require("fs");
+const net = require('net');
+const fs = require('fs');
 
 const localDebugger = net.createServer();
 
-const HTTP_HEADER_DELIMITER = "\r\n";
-const HTTP_BODY_DELIMITER = "\r\n\r\n";
-const DEFAULT_HANDLER_NAME = "handler";
-const HOST_NAME = "localhost";
+const HTTP_HEADER_DELIMITER = '\r\n';
+const HTTP_BODY_DELIMITER = '\r\n\r\n';
+const DEFAULT_HANDLER_NAME = 'handler';
+const HOST_NAME = 'localhost';
 const DEFAULT_PORT = 0;
 
 /**
@@ -48,7 +48,7 @@ const lambdaHandlerName = getLambdaHandlerName();
  */
 
 localDebugger.listen(portNumber, HOST_NAME, () => {
-  console.log(`Starting server on port: ${localDebugger.address().port}.`);
+    console.log(`Starting server on port: ${localDebugger.address().port}.`);
 });
 
 /**
@@ -60,19 +60,17 @@ localDebugger.listen(portNumber, HOST_NAME, () => {
  * The response is written onto the socket connection.
  */
 
-localDebugger.on("connection", (socket) => {
-  console.log(`Connection from: ${socket.remoteAddress}:${socket.remotePort}`);
-  socket.on("data", (data) => {
-    const body = JSON.parse(data.toString().split(HTTP_BODY_DELIMITER).pop());
-    console.log(`Request envelope: ${JSON.stringify(body)}`);
-    skillInvoker[lambdaHandlerName](body, null, (_invokeErr, response) => {
-      response = JSON.stringify(response);
-      console.log(`Response envelope: ${response}`);
-      socket.write(
-        `HTTP/1.1 200 OK${HTTP_HEADER_DELIMITER}Content-Type: application/json;charset=UTF-8${HTTP_HEADER_DELIMITER}Content-Length: ${response.length}${HTTP_BODY_DELIMITER}${response}`
-      );
+localDebugger.on('connection', (socket) => {
+    console.log(`Connection from: ${socket.remoteAddress}:${socket.remotePort}`);
+    socket.on('data', (data) => {
+        const body = JSON.parse(data.toString().split(HTTP_BODY_DELIMITER).pop());
+        console.log(`Request envelope: ${JSON.stringify(body)}`);
+        skillInvoker[lambdaHandlerName](body, null, (_invokeErr, response) => {
+            response = JSON.stringify(response);
+            console.log(`Response envelope: ${response}`);
+            socket.write(`HTTP/1.1 200 OK${HTTP_HEADER_DELIMITER}Content-Type: application/json;charset=UTF-8${HTTP_HEADER_DELIMITER}Content-Length: ${response.length}${HTTP_BODY_DELIMITER}${response}`);
+        });
     });
-  });
 });
 
 /**
@@ -81,24 +79,18 @@ localDebugger.on("connection", (socket) => {
  */
 
 function getAndValidatePortNumber() {
-  const portNumberArgument = Number(getArgument("portNumber", DEFAULT_PORT));
-  if (!Number.isInteger(portNumberArgument)) {
-    throw new Error(
-      `Port number has to be an integer - ${portNumberArgument}.`
-    );
-  }
-  if (portNumberArgument < 0 || portNumberArgument > 65535) {
-    throw new Error(
-      `Port out of legal range: ${portNumberArgument}. The port number should be in the range [0, 65535]`
-    );
-  }
-  if (portNumberArgument === 0) {
-    console.log(
-      "The TCP server will listen on a port that is free." +
-        "Check logs to find out what port number is being used"
-    );
-  }
-  return portNumberArgument;
+    const portNumberArgument = Number(getArgument('portNumber', DEFAULT_PORT));
+    if (!Number.isInteger(portNumberArgument)) {
+        throw new Error(`Port number has to be an integer - ${portNumberArgument}.`);
+    }
+    if (portNumberArgument < 0 || portNumberArgument > 65535) {
+        throw new Error(`Port out of legal range: ${portNumberArgument}. The port number should be in the range [0, 65535]`);
+    }
+    if (portNumberArgument === 0) {
+        console.log('The TCP server will listen on a port that is free.'
+        + 'Check logs to find out what port number is being used');
+    }
+    return portNumberArgument;
 }
 
 /**
@@ -107,7 +99,7 @@ function getAndValidatePortNumber() {
  */
 
 function getLambdaHandlerName() {
-  return getArgument("lambdaHandler", DEFAULT_HANDLER_NAME);
+    return getArgument('lambdaHandler', DEFAULT_HANDLER_NAME);
 }
 
 /**
@@ -117,11 +109,11 @@ function getLambdaHandlerName() {
 
 // eslint-disable-next-line consistent-return
 function getAndValidateSkillInvokerFile() {
-  const fileNameArgument = getArgument("skillEntryFile");
-  if (!fs.existsSync(fileNameArgument)) {
-    throw new Error(`File not found: ${fileNameArgument}`);
-  }
-  return fileNameArgument;
+    const fileNameArgument = getArgument('skillEntryFile');
+    if (!fs.existsSync(fileNameArgument)) {
+        throw new Error(`File not found: ${fileNameArgument}`);
+    }
+    return fileNameArgument;
 }
 
 /**
@@ -131,13 +123,13 @@ function getAndValidateSkillInvokerFile() {
  */
 
 function getArgument(argumentName, defaultValue) {
-  const index = process.argv.indexOf(`--${argumentName}`);
-  if (index === -1 || typeof process.argv[index + 1] === "undefined") {
-    if (defaultValue === undefined) {
-      throw new Error(`Required argument - ${argumentName} not provided.`);
-    } else {
-      return defaultValue;
+    const index = process.argv.indexOf(`--${argumentName}`);
+    if (index === -1 || typeof process.argv[index + 1] === 'undefined') {
+        if (defaultValue === undefined) {
+            throw new Error(`Required argument2 - ${argumentName} not provided.`);
+        } else {
+            return defaultValue;
+        }
     }
-  }
-  return process.argv[index + 1];
+    return process.argv[index + 1];
 }
