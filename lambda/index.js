@@ -25,13 +25,22 @@ const LaunchRequest = {
   },
   async handle(handlerInput) {
     const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const attributes = await attributesManager.getPersistentAttributes() || {};
+		const requestAttributes = attributesManager.getRequestAttributes();
+		let attributes = {};
+    try {
+      // attributes = (await attributesManager.getPersistentAttributes()) || {};
+      // attributes.gamesPlayed = 80085;
+      attributes.gamesPlayed = 80085;
+      attributes.gameState = "ENDED";
+    } catch (e) {
+      attributes.gamesPlayed = 1337;
+      attributes.gameState = "ENDED";
+    }
 
     if (Object.keys(attributes).length === 0) {
-      attributes.endedSessionCount = 0;
-      attributes.gamesPlayed = 0;
-      attributes.gameState = 'ENDED';
+			console.log("attributes:", attributes);
+      attributes.gamesPlayed = 420;
+      attributes.gameState = "ENDED";
     }
 
     attributesManager.setSessionAttributes(attributes);
@@ -159,16 +168,14 @@ const NoIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    sessionAttributes.endedSessionCount += 1;
-    sessionAttributes.gameState = 'ENDED';
+    sessionAttributes.gameState = "ENDED";
     attributesManager.setPersistentAttributes(sessionAttributes);
 
     await attributesManager.savePersistentAttributes();
 
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t('EXIT_MESSAGE'))
+      .speak(requestAttributes.t("EXIT_MESSAGE"))
       .getResponse();
-
   },
 };
 
