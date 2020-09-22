@@ -139,6 +139,7 @@ const YesIntent = {
     sessionAttributes.gameState = "STARTED";
     const statement = getRandomStatement();
     sessionAttributes.statement = statement;
+    console.log("statement:", statement);
 
     return handlerInput.responseBuilder
       .speak(
@@ -252,6 +253,7 @@ const StatementPickIntent = {
       await attributesManager.savePersistentAttributes();
     } catch (e) {}
 
+    const lie = sessionAttributes.statement.lie;
     const explanation = sessionAttributes.statement.lieExplanation;
 
     if (pickedStatement !== targetStatement) {
@@ -260,11 +262,19 @@ const StatementPickIntent = {
         .speak(
           requestAttributes.t(
             "INCORRECT_MESSAGE",
+            lie,
             pickedStatement.toString(),
             explanation
           )
         )
-        .reprompt(requestAttributes.t("INCORRECT_REPROMPT"))
+        .reprompt(
+          requestAttributes.t(
+            "INCORRECT_REPROMPT",
+            lie,
+            pickedStatement.toString(),
+            explanation
+          )
+        )
         .getResponse();
     } else if (pickedStatement === targetStatement) {
       // Correct pick
