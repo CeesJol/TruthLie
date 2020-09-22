@@ -3,7 +3,7 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "https://d981bed5e6e8.ngrok.io"
+          "uri": "arn:aws:lambda:us-east-1:171118328257:function:91ceec46-a47a-43d0-aaf2-758430c12fe4:Release_0"
         },
         "interfaces": [],
         "regions": {
