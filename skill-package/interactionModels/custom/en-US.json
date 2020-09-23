@@ -2,6 +2,11 @@
   "interactionModel": {
     "languageModel": {
       "invocationName": "two truths and a lie",
+      "modelConfiguration": {
+        "fallbackIntentSensitivity": {
+          "level": "LOW"
+        }
+      },
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -45,15 +50,42 @@
         {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
+        },
+        {
+          "name": "DifficultyIntent",
+          "slots": [
+            {
+              "name": "difficulty",
+              "type": "difficulty"
+            }
+          ],
+          "samples": [
+            "{difficulty} questions",
+            "would like {difficulty} statements",
+            "give me {difficulty}  statements",
+            "{difficulty} statements",
+            "a {difficulty} question",
+            "{difficulty}"
+          ]
         }
       ],
-      "types": [],
-      "modelConfiguration": {
-        "fallbackIntentSensitivity": {
-          "level": "LOW"
+      "types": [
+        {
+          "name": "difficulty",
+          "values": [
+            {
+              "name": {
+                "value": "hard"
+              }
+            },
+            {
+              "name": {
+                "value": "easy"
+              }
+            }
+          ]
         }
-      }
+      ]
     }
-  },
-  "version": "2"
+  }
 }
