@@ -33,16 +33,16 @@ const LaunchRequest = {
       attributes = (await attributesManager.getPersistentAttributes()) || {};
     } catch (e) {}
 
-    // if (Object.keys(attributes).length === 0) {
-    // Initialize attributes for first open
-    attributes.gamesPlayed = 420;
-    attributes.gameState = "ENDED";
-    attributes.debug = false;
-    attributes.indexes = {
-      easy: 0,
-      hard: 0,
-    };
-    // }
+    if (Object.keys(attributes).length === 0) {
+      // Initialize attributes for first open
+      attributes.gamesPlayed = 420;
+      attributes.gameState = "ENDED";
+      attributes.debug = false;
+      attributes.indexes = {
+        easy: 0,
+        hard: 0,
+      };
+    }
 
     attributesManager.setSessionAttributes(attributes);
 
