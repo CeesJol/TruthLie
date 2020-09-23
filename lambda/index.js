@@ -31,7 +31,11 @@ const LaunchRequest = {
     let attributes = {};
     try {
       attributes = (await attributesManager.getPersistentAttributes()) || {};
-    } catch (e) {}
+    } catch (e) {
+      attributes = {
+        debug: true,
+      };
+    }
 
     attributes = {
       // Initialize attributes for first open
