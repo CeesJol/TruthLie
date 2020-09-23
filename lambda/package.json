@@ -1,26 +1,17 @@
 {
-  "name": "skill-sample-nodejs-highlowgame",
-  "version": "2.6.0",
-  "description": "High-low number guessing game for Alexa (i18n)",
+  "name": "two-truths-and-a-lie-game",
+  "version": "1.0.0",
+  "description": "Two truths and a lie game",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alexa/skill-sample-nodejs-highlowgame.git"
-  },
   "keywords": [
-    "Alexa",
-    "game",
-    "skill"
+    "two",
+    "truths",
+    "lie"
   ],
-  "author": "Amazon.com",
-  "license": "Amazon Software License",
-  "bugs": {
-    "url": "https://github.com/alexa/skill-sample-nodejs-highlowgame/issues"
-  },
-  "homepage": "https://github.com/alexa/skill-sample-nodejs-highlowgame#readme",
+  "author": "Cees Jol",
   "dependencies": {
     "ask-sdk": "^2.6.0",
     "ask-sdk-model": "^1.32.0",

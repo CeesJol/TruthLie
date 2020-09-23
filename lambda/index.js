@@ -150,7 +150,7 @@ const YesIntent = {
 
 const DifficultyIntent = {
   canHandle(handlerInput) {
-    // only start a new game if yes is said when not playing a game.
+    // only accept difficulty input if already playing
     let isCurrentlyPlaying = false;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();

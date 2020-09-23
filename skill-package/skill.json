@@ -32,14 +32,17 @@
       "isAvailableWorldwide": true,
       "locales": {
         "en-US": {
-          "description": "Guess a number, and Alexa will tell you if you need to guess higher or lower. She will also tell you how many times you have played.",
+          "description": "You are given three statements, one of which is a lie. Correctly tell Alexa which one is the lie to win!",
           "examplePhrases": [
-            "Alexa open high low game",
-            "Alexa start high low game",
-            "Alexa ask high low game is it {number}"
+            "Alexa open two truths and a lie",
+            "Alexa start two truths and a lie",
+            "Alexa open two truths",
+            "Alexa open truth lie",
+            "Alexa start two truths",
+            "Alexa start truth lie"
           ],
           "name": "Two Truths and a Lie",
-          "summary": "Guess a number, and Alexa will tell you if you need to guess higher or lower."
+          "summary": "You are given three statements, one of which is a lie. Correctly tell Alexa which one is the lie to win!"
         }
       },
       "testingInstructions": "Sample Testing Instructions."
