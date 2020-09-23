@@ -115,7 +115,7 @@ const HelpIntent = {
   },
 };
 
-const YesIntent = {
+const DifficultyIntent = {
   canHandle(handlerInput) {
     // only start a new game if yes is said when not playing a game.
     let isCurrentlyPlaying = false;
@@ -132,7 +132,8 @@ const YesIntent = {
     return (
       !isCurrentlyPlaying &&
       Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.YesIntent"
+      Alexa.getIntentName(handlerInput.requestEnvelope) ===
+        "AMAZON.DifficultyIntent"
     );
   },
   handle(handlerInput) {
@@ -326,7 +327,7 @@ const FallbackHandler = {
       (Alexa.getIntentName(handlerInput.requestEnvelope) ===
         "AMAZON.FallbackIntent" ||
         Alexa.getIntentName(handlerInput.requestEnvelope) ===
-          "AMAZON.YesIntent" ||
+          "AMAZON.DifficultyIntent" ||
         Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.NoIntent")
     );
   },
@@ -404,7 +405,7 @@ exports.handler = skillBuilder
     ExitHandler,
     SessionEndedRequest,
     HelpIntent,
-    YesIntent,
+    DifficultyIntent,
     NoIntent,
     StatementPickIntent,
     FallbackHandler,
