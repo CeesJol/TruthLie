@@ -31,31 +31,28 @@ const LaunchRequest = {
     let attributes = {};
     try {
       attributes = (await attributesManager.getPersistentAttributes()) || {};
-    } catch (e) {
-      // Local debugger
-      attributes.gamesPlayed = 1337;
-      attributes.gameState = "ENDED";
-    }
+    } catch (e) {}
 
     if (Object.keys(attributes).length === 0) {
       // Initialize attributes for first open
       attributes.gamesPlayed = 420;
       attributes.gameState = "ENDED";
+      attributes.debug = false;
       attributes.indexes = {
-        EASY: 0,
-        HARD: 0,
+        easy: 0,
+        hard: 0,
       };
     }
 
     attributesManager.setSessionAttributes(attributes);
 
     const gamesPlayed = attributes.gamesPlayed.toString();
-    const potato = "potato man";
-    const speechOutput = requestAttributes.t(
-      "LAUNCH_MESSAGE",
-      gamesPlayed,
-      potato
-    );
+    let speechOutput;
+    if (attributes.debug) {
+      speechOutput = requestAttributes.t("LAUNCH_MESSAGE_DEBUG", gamesPlayed);
+    } else {
+      speechOutput = requestAttributes.t("LAUNCH_MESSAGE", gamesPlayed);
+    }
     const reprompt = requestAttributes.t("CONTINUE_MESSAGE");
 
     return handlerInput.responseBuilder
@@ -175,14 +172,22 @@ const DifficultyIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
+    // Get chosen difficulty
     const chosenDifficulty = Alexa.getSlotValue(
       handlerInput.requestEnvelope,
       "difficulty"
     );
 
+    // Store chosen difficulty
+    sessionAttributes.chosenDifficulty = chosenDifficulty;
+    console.log("chosenDifficulty:", chosenDifficulty);
+
     let statement;
     try {
-      statement = getStatement(chosenDifficulty, 0);
+      statement = getStatement(
+        chosenDifficulty,
+        sessionAttributes.indexes[chosenDifficulty]
+      );
     } catch (e) {
       statement = e;
     }
@@ -296,6 +301,7 @@ const StatementPickIntent = {
     const targetStatement = sessionAttributes.statement.lie;
 
     sessionAttributes.gamesPlayed += 1;
+    sessionAttributes.indexes[sessionAttributes.chosenDifficulty] += 1;
     sessionAttributes.gameState = "ENDED";
     try {
       attributesManager.setPersistentAttributes(sessionAttributes);

@@ -9,7 +9,9 @@ module.exports = {
     GUESS_CORRECT_MESSAGE:
       "Statement %s is indeed a lie! %s Would you like to play again?",
     LAUNCH_MESSAGE:
-      "Welcome to Two Truths and a Lie. You have played %s times. I is %s. Would you like to play?",
+      "Welcome to Two Truths and a Lie. You have played %s times. Would you like to play?",
+    LAUNCH_MESSAGE_DEBUG:
+      "Welcome debugger. You have played %s times. Would you like to play?",
     INCORRECT_MESSAGE:
       "Statement %s is not a lie. Statement %s was a lie: %s Would you like to play again?",
     INCORRECT_REPROMPT:
