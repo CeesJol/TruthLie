@@ -1,4 +1,4 @@
-const statements = [
+const EASY_STATEMENTS = [
   {
     s1: "My favorite color is red.",
     s2: "Potatoes are less healthy than sweet potatoes.",
@@ -17,12 +17,41 @@ const statements = [
   },
 ];
 
+const HARD_STATEMENTS = [
+  {
+    s1: "This one is true.",
+    s2: "This one is a lie.",
+    s3: "This one is true.",
+    lie: 2,
+    lieExplanation: "I didn't lie!",
+  },
+];
+
+const ALL_STATEMENTS = [...EASY_STATEMENTS, ...HARD_STATEMENTS];
+
 const getRandomStatement = () => {
   const random = Math.floor(Math.random() * statements.length);
-  return statements[random];
+  return ALL_STATEMENTS[random];
+};
+
+const getStatement = (difficulty, index) => {
+  let result;
+  switch (difficulty) {
+    case "EASY":
+      result = EASY_STATEMENTS[index];
+      break;
+    case "HARD":
+      result = HARD_STATEMENTS[index];
+      break;
+  }
+
+  if (!result) {
+    result = getRandomStatement();
+  }
+
+  return result;
 };
 
 module.exports = {
-  statements,
-  getRandomStatement,
+  getStatement,
 };

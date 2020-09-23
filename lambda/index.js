@@ -14,7 +14,7 @@ const languageStrings = {
 const AWS = require("aws-sdk");
 
 // To get a random statement
-const { getRandomStatement } = require("./statements");
+const { getStatement } = require("./statements");
 
 const LaunchRequest = {
   canHandle(handlerInput) {
@@ -32,14 +32,18 @@ const LaunchRequest = {
     try {
       attributes = (await attributesManager.getPersistentAttributes()) || {};
     } catch (e) {
+      // Local debugger
       attributes.gamesPlayed = 1337;
       attributes.gameState = "ENDED";
     }
 
     if (Object.keys(attributes).length === 0) {
-      console.log("attributes:", attributes);
       attributes.gamesPlayed = 420;
       attributes.gameState = "ENDED";
+      attributes.indexes = {
+        EASY: 0,
+        HARD: 0,
+      };
     }
 
     attributesManager.setSessionAttributes(attributes);
@@ -137,7 +141,7 @@ const YesIntent = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
     sessionAttributes.gameState = "STARTED";
-    const statement = getRandomStatement();
+    const statement = getStatement("EASY", sessionAttributes.index);
     sessionAttributes.statement = statement;
     console.log("statement:", statement);
 
