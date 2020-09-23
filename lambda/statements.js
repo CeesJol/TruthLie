@@ -30,17 +30,18 @@ const HARD_STATEMENTS = [
 const ALL_STATEMENTS = [...EASY_STATEMENTS, ...HARD_STATEMENTS];
 
 const getRandomStatement = () => {
-  const random = Math.floor(Math.random() * statements.length);
+  const random = Math.floor(Math.random() * ALL_STATEMENTS.length);
   return ALL_STATEMENTS[random];
 };
 
 const getStatement = (difficulty, index) => {
   let result;
   switch (difficulty) {
-    case "EASY":
+    // difficulty value comes from intent, so use lowercase
+    case "easy":
       result = EASY_STATEMENTS[index];
       break;
-    case "HARD":
+    case "hard":
       result = HARD_STATEMENTS[index];
       break;
   }

@@ -38,6 +38,7 @@ const LaunchRequest = {
     }
 
     if (Object.keys(attributes).length === 0) {
+      // Initialize attributes for first open
       attributes.gamesPlayed = 420;
       attributes.gameState = "ENDED";
       attributes.indexes = {
@@ -115,7 +116,7 @@ const HelpIntent = {
   },
 };
 
-const DifficultyIntent = {
+const YesIntent = {
   canHandle(handlerInput) {
     // only start a new game if yes is said when not playing a game.
     let isCurrentlyPlaying = false;
@@ -132,8 +133,7 @@ const DifficultyIntent = {
     return (
       !isCurrentlyPlaying &&
       Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) ===
-        "AMAZON.DifficultyIntent"
+      Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.YesIntent"
     );
   },
   handle(handlerInput) {
@@ -142,7 +142,51 @@ const DifficultyIntent = {
     const sessionAttributes = attributesManager.getSessionAttributes();
 
     sessionAttributes.gameState = "STARTED";
-    const statement = getStatement("EASY", sessionAttributes.index);
+
+    return handlerInput.responseBuilder
+      .speak(requestAttributes.t("WHICH_DIFFICULTY_MESSAGE"))
+      .reprompt(requestAttributes.t("WHICH_DIFFICULTY_MESSAGE"))
+      .getResponse();
+  },
+};
+
+const DifficultyIntent = {
+  canHandle(handlerInput) {
+    // only start a new game if yes is said when not playing a game.
+    let isCurrentlyPlaying = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (
+      sessionAttributes.gameState &&
+      sessionAttributes.gameState === "STARTED"
+    ) {
+      isCurrentlyPlaying = true;
+    }
+
+    return (
+      isCurrentlyPlaying &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === "DifficultyIntent"
+    );
+  },
+  handle(handlerInput) {
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    const chosenDifficulty = Alexa.getSlotValue(
+      handlerInput.requestEnvelope,
+      "difficulty"
+    );
+
+    let statement;
+    try {
+      statement = getStatement(chosenDifficulty, 0);
+    } catch (e) {
+      statement = e;
+    }
+
     sessionAttributes.statement = statement;
     console.log("statement:", statement);
 
@@ -267,16 +311,16 @@ const StatementPickIntent = {
         .speak(
           requestAttributes.t(
             "INCORRECT_MESSAGE",
-            lie,
             pickedStatement.toString(),
+            lie,
             explanation
           )
         )
         .reprompt(
           requestAttributes.t(
             "INCORRECT_REPROMPT",
-            lie,
             pickedStatement.toString(),
+            lie,
             explanation
           )
         )
@@ -327,7 +371,7 @@ const FallbackHandler = {
       (Alexa.getIntentName(handlerInput.requestEnvelope) ===
         "AMAZON.FallbackIntent" ||
         Alexa.getIntentName(handlerInput.requestEnvelope) ===
-          "AMAZON.DifficultyIntent" ||
+          "DifficultyIntent" ||
         Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.NoIntent")
     );
   },
@@ -406,6 +450,7 @@ exports.handler = skillBuilder
     SessionEndedRequest,
     HelpIntent,
     DifficultyIntent,
+    YesIntent,
     NoIntent,
     StatementPickIntent,
     FallbackHandler,
