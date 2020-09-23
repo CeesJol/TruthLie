@@ -193,6 +193,7 @@ const DifficultyIntent = {
       statement = e;
     }
 
+    sessionAttributes.gameState = "THINKING";
     sessionAttributes.statement = statement;
     console.log("statement:", statement);
 
@@ -226,7 +227,8 @@ const NoIntent = {
 
     if (
       sessionAttributes.gameState &&
-      sessionAttributes.gameState === "STARTED"
+      (sessionAttributes.gameState === "STARTED" ||
+        sessionAttributes.gameState === "THINKING")
     ) {
       isCurrentlyPlaying = true;
     }
@@ -279,7 +281,7 @@ const StatementPickIntent = {
 
     if (
       sessionAttributes.gameState &&
-      sessionAttributes.gameState === "STARTED"
+      sessionAttributes.gameState === "THINKING"
     ) {
       isCurrentlyPlaying = true;
     }
@@ -347,8 +349,8 @@ const StatementPickIntent = {
     }
 
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t("FALLBACK_MESSAGE_DURING_GAME"))
-      .reprompt(requestAttributes.t("FALLBACK_REPROMPT_DURING_GAME"))
+      .speak(requestAttributes.t("FALLBACK_THINKING"))
+      .reprompt(requestAttributes.t("FALLBACK_THINKING"))
       .getResponse();
   },
 };
@@ -387,21 +389,9 @@ const FallbackHandler = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    if (
-      sessionAttributes.gameState &&
-      sessionAttributes.gameState === "STARTED"
-    ) {
-      // currently playing
-      return handlerInput.responseBuilder
-        .speak(requestAttributes.t("FALLBACK_MESSAGE_DURING_GAME"))
-        .reprompt(requestAttributes.t("FALLBACK_REPROMPT_DURING_GAME"))
-        .getResponse();
-    }
-
-    // not playing
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t("FALLBACK_MESSAGE_OUTSIDE_GAME"))
-      .reprompt(requestAttributes.t("CONTINUE_MESSAGE"))
+      .speak(requestAttributes.t(`FALLBACK_${sessionAttributes.gameState}`))
+      .reprompt(requestAttributes.t(`FALLBACK_${sessionAttributes.gameState}`))
       .getResponse();
   },
 };

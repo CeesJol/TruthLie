@@ -2,10 +2,9 @@ module.exports = {
   translation: {
     SKILL_NAME: "Two Truths and a Lie Game",
     EXIT_MESSAGE: "Thanks for playing!",
-    FALLBACK_MESSAGE_DURING_GAME: `I can't help you with that. Do you want to play a game?`,
-    FALLBACK_REPROMPT_DURING_GAME:
-      "Please say whether you would like to play a game.",
-    FALLBACK_MESSAGE_OUTSIDE_GAME: `I can't help you with that.  I will tell two truths and  a lie and you try to tell which one is the lie. Would you like to play?`,
+    FALLBACK_ENDED: `I can't help you with that.  I will tell two truths and  a lie and you try to tell which one is the lie. Would you like to play?`,
+    FALLBACK_STARTED: `Please indicate which difficulty you want: easy or hard?`,
+    FALLBACK_THINKING: `Please say the number of a statement that you thought was a lie.`,
     GUESS_CORRECT_MESSAGE:
       "Statement %s is indeed a lie! %s Would you like to play again?",
     LAUNCH_MESSAGE:
