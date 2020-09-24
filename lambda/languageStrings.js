@@ -7,7 +7,9 @@ module.exports = {
     FALLBACK_THINKING: `Please say the number of a statement that you thought was a lie.`,
     GUESS_CORRECT_MESSAGE:
       "Statement %s is indeed a lie! %s Would you like to play again?",
-    LAUNCH_MESSAGE_FIRST_START:
+    GUESS_CORRECT_MESSAGE_COMPLETED_ALL:
+      "Statement %s is indeed a lie! %s You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?",
+    LAUNCH_MESSAGE_FIRST_TIME:
       "Welcome to Two Truths and a Lie. In two truths and a lie, I will tell you three statements: two are true, and one is a lie. It is on you to tell which one is a lie. Say a difficulty level, easy or hard, to get started!",
     LAUNCH_MESSAGE:
       "Welcome to Two Truths and a Lie. Say a difficulty level, easy or hard, to get started!",
@@ -15,8 +17,8 @@ module.exports = {
       "Welcome debugger. Say a difficulty level, easy or hard, to get started!",
     INCORRECT_MESSAGE:
       "Statement %s is not a lie. Statement %s was a lie: %s Would you like to play again?",
-    INCORRECT_REPROMPT:
-      "Statement %s is not a lie. Statement %s was a lie: %s Would you like to play again?",
+    INCORRECT_MESSAGE_COMPLETED_ALL:
+      "Statement %s is not a lie. Statement %s was a lie: %s You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?",
     CONTINUE_MESSAGE: "Say yes to play or no to quit.",
     HELP_MESSAGE:
       "I will tell you two truths and a lie, you tell me which one is a lie and I will tell you if you were right.",

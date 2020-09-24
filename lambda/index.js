@@ -14,7 +14,7 @@ const languageStrings = {
 const AWS = require("aws-sdk");
 
 // To get a random statement
-const { getStatement } = require("./statements");
+const { getStatement, getStatementLength } = require("./statements");
 
 const LaunchRequest = {
   canHandle(handlerInput) {
@@ -155,6 +155,43 @@ const YesIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
+    console.log(
+      "sessionAttributes.chosenDifficulty:",
+      sessionAttributes.chosenDifficulty
+    );
+    const chosenDifficulty = sessionAttributes.chosenDifficulty;
+    if (chosenDifficulty) {
+      // User already indicated a difficulty, don't ask again
+      let statement = getStatement(
+        chosenDifficulty,
+        sessionAttributes.indexes[chosenDifficulty]
+      );
+
+      sessionAttributes.gameState = "THINKING";
+      sessionAttributes.statement = statement;
+      console.log("statement:", statement);
+
+      return handlerInput.responseBuilder
+        .speak(
+          requestAttributes.t(
+            "YES_MESSAGE",
+            statement.s1,
+            statement.s2,
+            statement.s3
+          )
+        )
+        .reprompt(
+          requestAttributes.t(
+            "YES_REPROMPT",
+            statement.s1,
+            statement.s2,
+            statement.s3
+          )
+        )
+        .getResponse();
+    }
+
+    // Does not happen with Quick launch...
     sessionAttributes.gameState = "STARTED";
 
     return handlerInput.responseBuilder
@@ -244,15 +281,10 @@ const DifficultyIntent = {
     sessionAttributes.chosenDifficulty = chosenDifficulty;
     console.log("chosenDifficulty:", chosenDifficulty);
 
-    let statement;
-    try {
-      statement = getStatement(
-        chosenDifficulty,
-        sessionAttributes.indexes[chosenDifficulty]
-      );
-    } catch (e) {
-      statement = e;
-    }
+    let statement = getStatement(
+      chosenDifficulty,
+      sessionAttributes.indexes[chosenDifficulty]
+    );
 
     sessionAttributes.gameState = "THINKING";
     sessionAttributes.statement = statement;
@@ -366,7 +398,19 @@ const StatementPickIntent = {
 
     sessionAttributes.gamesPlayed += 1;
     sessionAttributes.indexes[sessionAttributes.chosenDifficulty] += 1;
-    sessionAttributes.gameState = "ENDED";
+    const completedAll =
+      sessionAttributes.indexes[sessionAttributes.chosenDifficulty] >=
+      getStatementLength(sessionAttributes.chosenDifficulty);
+    if (completedAll) {
+      // This will ask the user which difficulty they would like to play next.
+      sessionAttributes.gameState = "STARTED";
+
+      sessionAttributes.chosenDifficulty = undefined;
+    } else {
+      // This will ask the user whether they would like the next question.
+      sessionAttributes.gameState = "ENDED";
+    }
+
     try {
       attributesManager.setPersistentAttributes(sessionAttributes);
       await attributesManager.savePersistentAttributes();
@@ -380,7 +424,7 @@ const StatementPickIntent = {
       return handlerInput.responseBuilder
         .speak(
           requestAttributes.t(
-            "INCORRECT_MESSAGE",
+            "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
             pickedStatement.toString(),
             lie,
             explanation
@@ -388,7 +432,7 @@ const StatementPickIntent = {
         )
         .reprompt(
           requestAttributes.t(
-            "INCORRECT_REPROMPT",
+            "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
             pickedStatement.toString(),
             lie,
             explanation
@@ -400,12 +444,18 @@ const StatementPickIntent = {
       return handlerInput.responseBuilder
         .speak(
           requestAttributes.t(
-            "GUESS_CORRECT_MESSAGE",
+            "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
             pickedStatement.toString(),
             explanation
           )
         )
-        .reprompt(requestAttributes.t("CONTINUE_MESSAGE"))
+        .reprompt(
+          requestAttributes.t(
+            "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
+            pickedStatement.toString(),
+            explanation
+          )
+        )
         .getResponse();
     }
 

@@ -17,56 +17,56 @@ const STATEMENTS = {
       lieExplanation:
         "Canada is 2.8 million square miles, but Russia easily beats it with over 6.6 million square miles. With that, Russia is the world's largest country by landmass.",
     },
-    /**
-     * Source
-     * https://www.goodtoknow.co.uk/family/facts-for-kids-5446
-     */
-    {
-      s1:
-        "In the United Kingdom, it is illegal to stand within 90 metres of the Queen without socks on.",
-      s2: "Water covers 70% of Earth.",
-      s3: "Apples sink in water.",
-      lie: 3,
-      lieExplanation:
-        "Apples don't sink in water - they float! An apple consists for 25% out of air, causing it to float on water.",
-    },
-    /**
-     * Source
-     * https://www.goodtoknow.co.uk/family/facts-for-kids-5446
-     */
-    {
-      s1: "Cats sleep for 13 to 14 hours a day.",
-      s2: "Dogs have much better hearing than humans.",
-      s3: "Dolphins can breathe under water.",
-      lie: 3,
-      lieExplanation:
-        "Dolphins need air to breathe. They use a blowhole on top of their heads to breathe.",
-    },
-    /**
-     * Source
-     * https://www.goodtoknow.co.uk/family/facts-for-kids-5446
-     */
-    {
-      s1: "Other than on Earth, Mars is the only planet we've found life on.",
-      s2:
-        "Jupiter is the largest planet in our Solar system. It is so big that more than 1300 Earths could fit inside it.",
-      s3:
-        "The rings of Saturn are made up of millions of ice crystals, some as big as houses and others as small as specks of dust.",
-      lie: 1,
-      lieExplanation: "No life has ever been found on Mars.",
-    },
-    /**
-     * Source
-     * https://www.theactivetimes.com/adventure/n/ridiculous-facts-you-didnt-know-were-true
-     */
-    {
-      s1: "Toilet seats are cleaner than your cell phone.",
-      s2: "Chewing gum can only be digested after 7 years.",
-      s3: "Tsunamis can move at speeds over 500 miles per hour!",
-      lie: 1,
-      lieExplanation:
-        "Chewing gum can’t be digested at all, not even after 7 years. Don't worry though - it won't get stuck in your body either!",
-    },
+    // /**
+    //  * Source
+    //  * https://www.goodtoknow.co.uk/family/facts-for-kids-5446
+    //  */
+    // {
+    //   s1:
+    //     "In the United Kingdom, it is illegal to stand within 90 metres of the Queen without socks on.",
+    //   s2: "Water covers 70% of Earth.",
+    //   s3: "Apples sink in water.",
+    //   lie: 3,
+    //   lieExplanation:
+    //     "Apples don't sink in water - they float! An apple consists for 25% out of air, causing it to float on water.",
+    // },
+    // /**
+    //  * Source
+    //  * https://www.goodtoknow.co.uk/family/facts-for-kids-5446
+    //  */
+    // {
+    //   s1: "Cats sleep for 13 to 14 hours a day.",
+    //   s2: "Dogs have much better hearing than humans.",
+    //   s3: "Dolphins can breathe under water.",
+    //   lie: 3,
+    //   lieExplanation:
+    //     "Dolphins need air to breathe. They use a blowhole on top of their heads to breathe.",
+    // },
+    // /**
+    //  * Source
+    //  * https://www.goodtoknow.co.uk/family/facts-for-kids-5446
+    //  */
+    // {
+    //   s1: "Other than on Earth, Mars is the only planet we've found life on.",
+    //   s2:
+    //     "Jupiter is the largest planet in our Solar system. It is so big that more than 1300 Earths could fit inside it.",
+    //   s3:
+    //     "The rings of Saturn are made up of millions of ice crystals, some as big as houses and others as small as specks of dust.",
+    //   lie: 1,
+    //   lieExplanation: "No life has ever been found on Mars.",
+    // },
+    // /**
+    //  * Source
+    //  * https://www.theactivetimes.com/adventure/n/ridiculous-facts-you-didnt-know-were-true
+    //  */
+    // {
+    //   s1: "Toilet seats are cleaner than your cell phone.",
+    //   s2: "Chewing gum can only be digested after 7 years.",
+    //   s3: "Tsunamis can move at speeds over 500 miles per hour!",
+    //   lie: 2,
+    //   lieExplanation:
+    //     "Chewing gum can’t be digested at all, not even after 7 years. Don't worry though - it won't get stuck in your body either!",
+    // },
   ],
   hard: [
     /*
@@ -147,6 +147,9 @@ const getStatement = (difficulty, index) => {
   return result;
 };
 
+const getStatementLength = (difficulty) => STATEMENTS[difficulty].length;
+
 module.exports = {
   getStatement,
+  getStatementLength,
 };
