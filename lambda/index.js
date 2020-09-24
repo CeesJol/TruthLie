@@ -173,7 +173,7 @@ const ResetIntent = {
       Alexa.getIntentName(handlerInput.requestEnvelope) === "ResetIntent"
     );
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const { attributesManager } = handlerInput;
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
@@ -182,9 +182,9 @@ const ResetIntent = {
     sessionAttributes.indexes = {
       easy: 0,
       hard: 0,
-		};
-		
-		try {
+    };
+
+    try {
       attributesManager.setPersistentAttributes(sessionAttributes);
       await attributesManager.savePersistentAttributes();
     } catch (e) {}
