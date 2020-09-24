@@ -67,6 +67,10 @@
             "a {difficulty} question",
             "{difficulty}"
           ]
+        },
+        {
+          "name": "ResetIntent",
+          "samples": ["reset", "reset my progress", "reset me"]
         }
       ],
       "types": [

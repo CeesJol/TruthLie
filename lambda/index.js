@@ -152,6 +152,49 @@ const YesIntent = {
   },
 };
 
+const ResetIntent = {
+  canHandle(handlerInput) {
+    // only reset your stats if reset is said when not playing a game.
+    let isCurrentlyPlaying = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (
+      sessionAttributes.gameState &&
+      (sessionAttributes.gameState === "STARTED" ||
+        sessionAttributes.gameState === "THINKING")
+    ) {
+      isCurrentlyPlaying = true;
+    }
+
+    return (
+      !isCurrentlyPlaying &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === "ResetIntent"
+    );
+  },
+  handle(handlerInput) {
+    const { attributesManager } = handlerInput;
+    const requestAttributes = attributesManager.getRequestAttributes();
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    sessionAttributes.gameState = "STARTED";
+    sessionAttributes = {
+      ...sessionAttributes,
+      gamesPlayed: 0,
+      indexes: {
+        easy: 0,
+        hard: 0,
+      },
+    };
+
+    return handlerInput.responseBuilder
+      .speak(requestAttributes.t("RESET_SUCCESS_MESSAGE"))
+      .reprompt(requestAttributes.t("RESET_SUCCESS_MESSAGE"))
+      .getResponse();
+  },
+};
+
 const DifficultyIntent = {
   canHandle(handlerInput) {
     // only accept difficulty input if already playing
@@ -451,6 +494,7 @@ exports.handler = skillBuilder
     SessionEndedRequest,
     HelpIntent,
     DifficultyIntent,
+    ResetIntent,
     YesIntent,
     NoIntent,
     StatementPickIntent,
