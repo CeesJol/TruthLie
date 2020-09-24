@@ -49,14 +49,25 @@ const LaunchRequest = {
       ...attributes,
     };
 
+    // Quick launch the game by skipping the "Would you like to play" question
+    // Just immediately ask which difficulty they want on launch
+    attributes.gameState = "STARTED";
+
     attributesManager.setSessionAttributes(attributes);
 
     const gamesPlayed = attributes.gamesPlayed.toString();
     let speechOutput;
     if (attributes.debug) {
-      speechOutput = requestAttributes.t("LAUNCH_MESSAGE_DEBUG", gamesPlayed);
+      // This is a debug session
+      speechOutput = requestAttributes.t("LAUNCH_MESSAGE_DEBUG");
     } else {
-      speechOutput = requestAttributes.t("LAUNCH_MESSAGE", gamesPlayed);
+      if (attributes.gamesPlayed === 0) {
+        // User has never played before
+        speechOutput = requestAttributes.t("LAUNCH_MESSAGE_FIRST_TIME");
+      } else {
+        // User has played before
+        speechOutput = requestAttributes.t("LAUNCH_MESSAGE");
+      }
     }
     const reprompt = requestAttributes.t("CONTINUE_MESSAGE");
 
@@ -127,7 +138,8 @@ const YesIntent = {
 
     if (
       sessionAttributes.gameState &&
-      sessionAttributes.gameState === "STARTED"
+      (sessionAttributes.gameState === "STARTED" ||
+        sessionAttributes.gameState === "THINKING")
     ) {
       isCurrentlyPlaying = true;
     }
@@ -199,6 +211,7 @@ const ResetIntent = {
 const DifficultyIntent = {
   canHandle(handlerInput) {
     // only accept difficulty input if already playing
+    // or user just launched the skill
     let isCurrentlyPlaying = false;
     const { attributesManager } = handlerInput;
     const sessionAttributes = attributesManager.getSessionAttributes();
@@ -211,7 +224,7 @@ const DifficultyIntent = {
     }
 
     return (
-      isCurrentlyPlaying &&
+      (isCurrentlyPlaying || !sessionAttributes.gameState) &&
       Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
       Alexa.getIntentName(handlerInput.requestEnvelope) === "DifficultyIntent"
     );
