@@ -182,7 +182,12 @@ const ResetIntent = {
     sessionAttributes.indexes = {
       easy: 0,
       hard: 0,
-    };
+		};
+		
+		try {
+      attributesManager.setPersistentAttributes(sessionAttributes);
+      await attributesManager.savePersistentAttributes();
+    } catch (e) {}
 
     return handlerInput.responseBuilder
       .speak(requestAttributes.t("RESET_SUCCESS_MESSAGE"))

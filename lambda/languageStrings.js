@@ -26,6 +26,7 @@ module.exports = {
       "I tell you three statements and you guess which one is a lie. Statement one is: %s Statement two is: %s And statement three is: %s Now, which one do you think is a lie?",
     WHICH_DIFFICULTY_MESSAGE:
       "Nice! Which difficulty would you like to play, easy or hard?",
-    RESET_SUCCESS_MESSAGE: "Successfully resetted your stats.",
+    RESET_SUCCESS_MESSAGE:
+      "Successfully resetted your stats. Would you like to play?",
   },
 };
