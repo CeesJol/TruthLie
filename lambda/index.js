@@ -178,14 +178,10 @@ const ResetIntent = {
     const requestAttributes = attributesManager.getRequestAttributes();
     const sessionAttributes = attributesManager.getSessionAttributes();
 
-    sessionAttributes.gameState = "STARTED";
-    sessionAttributes = {
-      ...sessionAttributes,
-      gamesPlayed: 0,
-      indexes: {
-        easy: 0,
-        hard: 0,
-      },
+    sessionAttributes.gamesPlayed = 0;
+    sessionAttributes.indexes = {
+      easy: 0,
+      hard: 0,
     };
 
     return handlerInput.responseBuilder
