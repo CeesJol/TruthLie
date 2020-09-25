@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "two truths and a lie",
+      "invocationName": "two truths",
       "modelConfiguration": {
         "fallbackIntentSensitivity": {
           "level": "LOW"

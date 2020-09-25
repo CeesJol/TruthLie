@@ -34,8 +34,6 @@
         "en-US": {
           "description": "You are given three statements, one of which is a lie. Correctly tell Alexa which one is the lie to win!",
           "examplePhrases": [
-            "Alexa open two truths and a lie",
-            "Alexa start two truths and a lie",
             "Alexa open two truths",
             "Alexa open truth lie",
             "Alexa start two truths",
