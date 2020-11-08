@@ -1,4 +1,5 @@
 const { getStatement, getStatementLength } = require("../statements");
+const { getPositiveStatement, getNegativeStatement } = require("../lib");
 const Alexa = require("ask-sdk");
 
 const handleLaunch = async (handlerInput) => {
@@ -131,7 +132,7 @@ const handleYes = (handlerInput) => {
     sessionAttributes.statement = statement;
     console.log("statement:", statement);
 
-    const speechOut = requestAttributes.t(
+    const speechOutput = requestAttributes.t(
       "YES_REPROMPT",
       statement.s1,
       statement.s2,
@@ -208,6 +209,7 @@ const handleStatementPick = async (handlerInput) => {
     // Incorrect pick
     const speechOutput = requestAttributes.t(
       "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
+      getNegativeStatement(),
       pickedStatement.toString(),
       lie,
       explanation
@@ -220,6 +222,7 @@ const handleStatementPick = async (handlerInput) => {
     // Correct pick
     const speechOutput = requestAttributes.t(
       "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
+      getPositiveStatement(),
       pickedStatement.toString(),
       explanation
     );
