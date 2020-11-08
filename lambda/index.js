@@ -13,8 +13,15 @@ const languageStrings = {
 };
 const AWS = require("aws-sdk");
 
-// To get a random statement
-const { getStatement, getStatementLength } = require("./statements");
+const {
+  handleLaunch,
+  handleReset,
+  handleDifficulty,
+  handleYes,
+  handleNo,
+  handleStatementPick,
+} = require("./handlers/handlers");
+const { canHandle } = require("./handlers/canHandlers");
 
 const LaunchRequest = {
   canHandle(handlerInput) {
@@ -26,55 +33,7 @@ const LaunchRequest = {
     );
   },
   async handle(handlerInput) {
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    let attributes = {};
-    try {
-      attributes = (await attributesManager.getPersistentAttributes()) || {};
-    } catch (e) {
-      attributes = {
-        debug: true,
-      };
-    }
-
-    attributes = {
-      // Initialize attributes for first open
-      gamesPlayed: 420,
-      gameState: "ENDED",
-      debug: false,
-      indexes: {
-        easy: 0,
-        hard: 0,
-      },
-      ...attributes,
-    };
-
-    // Quick launch the game by skipping the "Would you like to play" question
-    // Just immediately ask which difficulty they want on launch
-    attributes.gameState = "STARTED";
-
-    attributesManager.setSessionAttributes(attributes);
-
-    const gamesPlayed = attributes.gamesPlayed.toString();
-    let speechOutput;
-    if (attributes.debug) {
-      // This is a debug session
-      speechOutput = requestAttributes.t("LAUNCH_MESSAGE_DEBUG");
-    } else {
-      if (attributes.gamesPlayed === 0) {
-        // User has never played before
-        speechOutput = requestAttributes.t("LAUNCH_MESSAGE_FIRST_TIME");
-      } else {
-        // User has played before
-        speechOutput = requestAttributes.t("LAUNCH_MESSAGE");
-      }
-    }
-    const reprompt = requestAttributes.t("CONTINUE_MESSAGE");
-
-    return handlerInput.responseBuilder
-      .speak(speechOutput)
-      .reprompt(reprompt)
-      .getResponse();
+    return handleLaunch(handlerInput);
   },
 };
 
@@ -131,117 +90,28 @@ const HelpIntent = {
 
 const YesIntent = {
   canHandle(handlerInput) {
-    // only start a new game if yes is said when not playing a game.
-    let isCurrentlyPlaying = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (
-      sessionAttributes.gameState &&
-      (sessionAttributes.gameState === "STARTED" ||
-        sessionAttributes.gameState === "THINKING")
-    ) {
-      isCurrentlyPlaying = true;
-    }
-
-    return (
-      !isCurrentlyPlaying &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.YesIntent"
-    );
+    return canHandle(handlerInput, "AMAZON.YesIntent");
   },
   handle(handlerInput) {
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
+    return handleYes(handlerInput);
+  },
+};
 
-    console.log(
-      "sessionAttributes.chosenDifficulty:",
-      sessionAttributes.chosenDifficulty
-    );
-    const chosenDifficulty = sessionAttributes.chosenDifficulty;
-    if (chosenDifficulty) {
-      // User already indicated a difficulty, don't ask again
-      let statement = getStatement(
-        chosenDifficulty,
-        sessionAttributes.indexes[chosenDifficulty]
-      );
-
-      sessionAttributes.gameState = "THINKING";
-      sessionAttributes.statement = statement;
-      console.log("statement:", statement);
-
-      return handlerInput.responseBuilder
-        .speak(
-          requestAttributes.t(
-            "YES_MESSAGE",
-            statement.s1,
-            statement.s2,
-            statement.s3
-          )
-        )
-        .reprompt(
-          requestAttributes.t(
-            "YES_REPROMPT",
-            statement.s1,
-            statement.s2,
-            statement.s3
-          )
-        )
-        .getResponse();
-    }
-
-    // Does not happen with Quick launch...
-    sessionAttributes.gameState = "STARTED";
-
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t("WHICH_DIFFICULTY_MESSAGE"))
-      .reprompt(requestAttributes.t("WHICH_DIFFICULTY_MESSAGE"))
-      .getResponse();
+const NoIntent = {
+  canHandle(handlerInput) {
+    return canHandle(handlerInput, "AMAZON.NoIntent");
+  },
+  async handle(handlerInput) {
+    return handleNo(handlerInput);
   },
 };
 
 const ResetIntent = {
   canHandle(handlerInput) {
-    // only reset your stats if reset is said when not playing a game.
-    let isCurrentlyPlaying = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (
-      sessionAttributes.gameState &&
-      (sessionAttributes.gameState === "STARTED" ||
-        sessionAttributes.gameState === "THINKING")
-    ) {
-      isCurrentlyPlaying = true;
-    }
-
-    return (
-      !isCurrentlyPlaying &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === "ResetIntent"
-    );
+    return canHandle(handlerInput, "ResetIntent");
   },
   async handle(handlerInput) {
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    sessionAttributes.gamesPlayed = 0;
-    sessionAttributes.indexes = {
-      easy: 0,
-      hard: 0,
-    };
-
-    try {
-      attributesManager.setPersistentAttributes(sessionAttributes);
-      await attributesManager.savePersistentAttributes();
-    } catch (e) {}
-
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t("RESET_SUCCESS_MESSAGE"))
-      .reprompt(requestAttributes.t("RESET_SUCCESS_MESSAGE"))
-      .getResponse();
+    return handleReset(handlerInput);
   },
 };
 
@@ -267,87 +137,7 @@ const DifficultyIntent = {
     );
   },
   handle(handlerInput) {
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    // Get chosen difficulty
-    const chosenDifficulty = Alexa.getSlotValue(
-      handlerInput.requestEnvelope,
-      "difficulty"
-    );
-
-    // Store chosen difficulty
-    sessionAttributes.chosenDifficulty = chosenDifficulty;
-    console.log("chosenDifficulty:", chosenDifficulty);
-
-    let statement = getStatement(
-      chosenDifficulty,
-      sessionAttributes.indexes[chosenDifficulty]
-    );
-
-    sessionAttributes.gameState = "THINKING";
-    sessionAttributes.statement = statement;
-    console.log("statement:", statement);
-
-    return handlerInput.responseBuilder
-      .speak(
-        requestAttributes.t(
-          "YES_MESSAGE",
-          statement.s1,
-          statement.s2,
-          statement.s3
-        )
-      )
-      .reprompt(
-        requestAttributes.t(
-          "YES_REPROMPT",
-          statement.s1,
-          statement.s2,
-          statement.s3
-        )
-      )
-      .getResponse();
-  },
-};
-
-const NoIntent = {
-  canHandle(handlerInput) {
-    // only treat no as an exit when outside a game
-    let isCurrentlyPlaying = false;
-    const { attributesManager } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    if (
-      sessionAttributes.gameState &&
-      (sessionAttributes.gameState === "STARTED" ||
-        sessionAttributes.gameState === "THINKING")
-    ) {
-      isCurrentlyPlaying = true;
-    }
-
-    return (
-      !isCurrentlyPlaying &&
-      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.NoIntent"
-    );
-  },
-  async handle(handlerInput) {
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    sessionAttributes.gameState = "ENDED";
-
-    try {
-      attributesManager.setPersistentAttributes(sessionAttributes);
-      await attributesManager.savePersistentAttributes();
-    } catch (e) {}
-
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t("EXIT_MESSAGE"))
-      .getResponse();
+    return handleDifficulty(handlerInput);
   },
 };
 
@@ -386,83 +176,7 @@ const StatementPickIntent = {
     );
   },
   async handle(handlerInput) {
-    const { attributesManager } = handlerInput;
-    const requestAttributes = attributesManager.getRequestAttributes();
-    const sessionAttributes = attributesManager.getSessionAttributes();
-
-    const pickedStatement = parseInt(
-      Alexa.getSlotValue(handlerInput.requestEnvelope, "number"),
-      10
-    );
-    const targetStatement = sessionAttributes.statement.lie;
-
-    sessionAttributes.gamesPlayed += 1;
-    sessionAttributes.indexes[sessionAttributes.chosenDifficulty] += 1;
-    const completedAll =
-      sessionAttributes.indexes[sessionAttributes.chosenDifficulty] >=
-      getStatementLength(sessionAttributes.chosenDifficulty);
-    if (completedAll) {
-      // This will ask the user which difficulty they would like to play next.
-      sessionAttributes.gameState = "STARTED";
-
-      sessionAttributes.chosenDifficulty = undefined;
-    } else {
-      // This will ask the user whether they would like the next question.
-      sessionAttributes.gameState = "ENDED";
-    }
-
-    try {
-      attributesManager.setPersistentAttributes(sessionAttributes);
-      await attributesManager.savePersistentAttributes();
-    } catch (e) {}
-
-    const lie = sessionAttributes.statement.lie;
-    const explanation = sessionAttributes.statement.lieExplanation;
-
-    if (pickedStatement !== targetStatement) {
-      // Incorrect pick
-      return handlerInput.responseBuilder
-        .speak(
-          requestAttributes.t(
-            "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
-            pickedStatement.toString(),
-            lie,
-            explanation
-          )
-        )
-        .reprompt(
-          requestAttributes.t(
-            "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
-            pickedStatement.toString(),
-            lie,
-            explanation
-          )
-        )
-        .getResponse();
-    } else if (pickedStatement === targetStatement) {
-      // Correct pick
-      return handlerInput.responseBuilder
-        .speak(
-          requestAttributes.t(
-            "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
-            pickedStatement.toString(),
-            explanation
-          )
-        )
-        .reprompt(
-          requestAttributes.t(
-            "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
-            pickedStatement.toString(),
-            explanation
-          )
-        )
-        .getResponse();
-    }
-
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t("FALLBACK_THINKING"))
-      .reprompt(requestAttributes.t("FALLBACK_THINKING"))
-      .getResponse();
+    return handleStatementPick(handlerInput);
   },
 };
 
