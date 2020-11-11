@@ -21,6 +21,7 @@ const {
   handleNo,
   handleStatementPick,
   handleUnhandled,
+  handleRepeatStatements,
 } = require("./handlers/handlers");
 const { canHandle } = require("./handlers/canHandlers");
 
@@ -139,6 +140,32 @@ const DifficultyIntent = {
   },
   handle(handlerInput) {
     return handleDifficulty(handlerInput);
+  },
+};
+
+const RepeatStatementsIntent = {
+  canHandle(handlerInput) {
+    // Only repeat statements when in game
+    let isCurrentlyPlaying = false;
+    const { attributesManager } = handlerInput;
+    const sessionAttributes = attributesManager.getSessionAttributes();
+
+    if (
+      sessionAttributes.gameState &&
+      sessionAttributes.gameState === "THINKING"
+    ) {
+      isCurrentlyPlaying = true;
+    }
+
+    return (
+      isCurrentlyPlaying &&
+      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) ===
+        "RepeatStatementsIntent"
+    );
+  },
+  handle(handlerInput) {
+    return handleRepeatStatements(handlerInput);
   },
 };
 
@@ -272,6 +299,7 @@ exports.handler = skillBuilder
     YesIntent,
     NoIntent,
     StatementPickIntent,
+    RepeatStatementsIntent,
     FallbackHandler,
     UnhandledIntent
   )

@@ -258,13 +258,33 @@ const handleUnhandled = (handlerInput) => {
   if (gameState === "STARTED") {
     // User should say difficulty
     speechOutput = requestAttributes.t("UNHANDLED_STARTED");
-  } else if (gameState === "PLAYING") {
+  } else if (gameState === "THINKING") {
     // User should say a statement
     // Doesn't actually happen in reality, already handled in statement picker handler
-    speechOutput = requestAttributes.t("UNHANDLED_PLAYING");
+    speechOutput = requestAttributes.t("UNHANDLED_THINKING");
   } else {
     speechOutput = requestAttributes.t("UNHANDLED_OTHER");
   }
+
+  return handlerInput.responseBuilder
+    .speak(speechOutput)
+    .reprompt(speechOutput)
+    .getResponse();
+};
+
+const handleRepeatStatements = (handlerInput) => {
+  const { attributesManager } = handlerInput;
+  const requestAttributes = attributesManager.getRequestAttributes();
+  const sessionAttributes = attributesManager.getSessionAttributes();
+
+  const statement = sessionAttributes.statement;
+
+  const speechOutput = requestAttributes.t(
+    "REPEAT_STATEMENTS",
+    statement.s1,
+    statement.s2,
+    statement.s3
+  );
 
   return handlerInput.responseBuilder
     .speak(speechOutput)
@@ -280,4 +300,5 @@ module.exports = {
   handleNo,
   handleStatementPick,
   handleUnhandled,
+  handleRepeatStatements,
 };

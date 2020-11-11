@@ -20,11 +20,14 @@ module.exports = {
     INCORRECT_MESSAGE: `%s Statement %s was not a lie. Statement %s was a lie: %s Here are the next three statements. ${SPEECH_STATEMENTS}`,
     INCORRECT_MESSAGE_COMPLETED_ALL:
       "%s Statement %s was not a lie. Statement %s was a lie: %s You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?",
+    // REPEAT
+    REPEAT_STATEMENTS:
+      "The statements were: %s %s %s Which one do you think is a lie?",
     // HELP MESSAGES
     UNHANDLED_OTHER: "Say yes to play or no to quit.",
     UNHANDLED_STARTED:
       "Say a difficulty level, easy or hard, to start the game.",
-    UNHANDLED_STARTED:
+    UNHANDLED_THINKING:
       "Say which of the three statements was a lie, or say 'repeat the statements'.",
     HELP_MESSAGE:
       "I will tell you two truths and a lie, you tell me which one is a lie and I will tell you if you were right.",

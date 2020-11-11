@@ -1,96 +1,111 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "two truths",
-      "modelConfiguration": {
-        "fallbackIntentSensitivity": {
-          "level": "LOW"
-        }
-      },
-      "intents": [
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.YesIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.FallbackIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.NoIntent",
-          "samples": []
-        },
-        {
-          "name": "NumberGuessIntent",
-          "slots": [
-            {
-              "name": "number",
-              "type": "AMAZON.NUMBER"
-            }
-          ],
-          "samples": [
-            "{number}",
-            "is it {number}",
-            "how about {number}",
-            "could be {number}"
-          ]
-        },
-        {
-          "name": "AMAZON.NavigateHomeIntent",
-          "samples": []
-        },
-        {
-          "name": "DifficultyIntent",
-          "slots": [
-            {
-              "name": "difficulty",
-              "type": "difficulty"
-            }
-          ],
-          "samples": [
-            "{difficulty} questions",
-            "would like {difficulty} statements",
-            "give me {difficulty}  statements",
-            "{difficulty} statements",
-            "a {difficulty} question",
-            "{difficulty}"
-          ]
-        },
-        {
-          "name": "ResetIntent",
-          "slots": [],
-          "samples": ["reset", "reset my progress", "reset me"]
-        }
-      ],
-      "types": [
-        {
-          "name": "difficulty",
-          "values": [
-            {
-              "name": {
-                "value": "hard"
-              }
-            },
-            {
-              "name": {
-                "value": "easy"
-              }
-            }
-          ]
-        }
-      ]
-    }
-  }
+	"interactionModel": {
+			"languageModel": {
+					"invocationName": "two truths",
+					"modelConfiguration": {
+							"fallbackIntentSensitivity": {
+									"level": "LOW"
+							}
+					},
+					"intents": [
+							{
+									"name": "AMAZON.CancelIntent",
+									"samples": []
+							},
+							{
+									"name": "AMAZON.HelpIntent",
+									"samples": []
+							},
+							{
+									"name": "AMAZON.StopIntent",
+									"samples": []
+							},
+							{
+									"name": "AMAZON.YesIntent",
+									"samples": []
+							},
+							{
+									"name": "AMAZON.FallbackIntent",
+									"samples": []
+							},
+							{
+									"name": "AMAZON.NoIntent",
+									"samples": []
+							},
+							{
+									"name": "NumberGuessIntent",
+									"slots": [
+											{
+													"name": "number",
+													"type": "AMAZON.NUMBER"
+											}
+									],
+									"samples": [
+											"{number}",
+											"is it {number}",
+											"how about {number}",
+											"could be {number}"
+									]
+							},
+							{
+									"name": "AMAZON.NavigateHomeIntent",
+									"samples": []
+							},
+							{
+									"name": "DifficultyIntent",
+									"slots": [
+											{
+													"name": "difficulty",
+													"type": "difficulty"
+											}
+									],
+									"samples": [
+											"{difficulty} questions",
+											"would like {difficulty} statements",
+											"give me {difficulty}  statements",
+											"{difficulty} statements",
+											"a {difficulty} question",
+											"{difficulty}"
+									]
+							},
+							{
+									"name": "ResetIntent",
+									"slots": [],
+									"samples": [
+											"reset",
+											"reset my progress",
+											"reset me"
+									]
+							},
+							{
+									"name": "RepeatStatementsIntent",
+									"slots": [],
+									"samples": [
+											"i forgot the statements",
+											"say the statements",
+											"what were the statements again",
+											"could you repeat them",
+											"repeat the statements"
+									]
+							}
+					],
+					"types": [
+							{
+									"name": "difficulty",
+									"values": [
+											{
+													"name": {
+															"value": "hard"
+													}
+											},
+											{
+													"name": {
+															"value": "easy"
+													}
+											}
+									]
+							}
+					]
+			}
+	}
 }
