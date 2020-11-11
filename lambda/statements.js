@@ -126,7 +126,7 @@ const STATEMENTS = {
       s1: "You can fire an arrow around an object to hit a target.",
       s2:
         "The Burj Khalifa is so tall you can see two sunsets from it in one day.",
-      s3: "You can talk to another skydiver during free fall",
+      s3: "You can talk to another skydiver during free fall.",
       lie: 3,
       lieExplanation:
         "The wind traveling past your ears makes you deaf to all sounds.",

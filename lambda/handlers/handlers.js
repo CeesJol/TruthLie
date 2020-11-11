@@ -181,20 +181,26 @@ const handleStatementPick = async (handlerInput) => {
     10
   );
   const targetStatement = sessionAttributes.statement.lie;
-
+  const explanation = sessionAttributes.statement.lieExplanation;
   sessionAttributes.gamesPlayed += 1;
   sessionAttributes.indexes[sessionAttributes.chosenDifficulty] += 1;
   const completedAll =
     sessionAttributes.indexes[sessionAttributes.chosenDifficulty] >=
     getStatementLength(sessionAttributes.chosenDifficulty);
+  let statement = {};
   if (completedAll) {
     // This will ask the user which difficulty they would like to play next.
     sessionAttributes.gameState = "STARTED";
 
     sessionAttributes.chosenDifficulty = undefined;
   } else {
-    // This will ask the user whether they would like the next question.
-    sessionAttributes.gameState = "ENDED";
+    // Get next statement
+    statement = getStatement(
+      sessionAttributes.chosenDifficulty,
+      sessionAttributes.indexes[sessionAttributes.chosenDifficulty]
+    );
+    sessionAttributes.statement = statement;
+    console.log("statement2:", statement);
   }
 
   try {
@@ -202,17 +208,17 @@ const handleStatementPick = async (handlerInput) => {
     await attributesManager.savePersistentAttributes();
   } catch (e) {}
 
-  const lie = sessionAttributes.statement.lie;
-  const explanation = sessionAttributes.statement.lieExplanation;
-
   if (pickedStatement !== targetStatement) {
     // Incorrect pick
     const speechOutput = requestAttributes.t(
       "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
       getNegativeStatement(),
       pickedStatement.toString(),
-      lie,
-      explanation
+      targetStatement,
+      explanation,
+      statement.s1,
+      statement.s2,
+      statement.s3
     );
     return handlerInput.responseBuilder
       .speak(speechOutput)
@@ -224,7 +230,10 @@ const handleStatementPick = async (handlerInput) => {
       "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
       getPositiveStatement(),
       pickedStatement.toString(),
-      explanation
+      explanation,
+      statement.s1,
+      statement.s2,
+      statement.s3
     );
     return handlerInput.responseBuilder
       .speak(speechOutput)
