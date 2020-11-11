@@ -45,11 +45,10 @@ const handleLaunch = async (handlerInput) => {
       speechOutput = requestAttributes.t("LAUNCH_MESSAGE");
     }
   }
-  const reprompt = requestAttributes.t("CONTINUE_MESSAGE");
 
   return handlerInput.responseBuilder
     .speak(speechOutput)
-    .reprompt(reprompt)
+    .reprompt(speechOutput)
     .getResponse();
 };
 
@@ -248,6 +247,31 @@ const handleStatementPick = async (handlerInput) => {
     .getResponse();
 };
 
+const handleUnhandled = (handlerInput) => {
+  const { attributesManager } = handlerInput;
+  const requestAttributes = attributesManager.getRequestAttributes();
+  const sessionAttributes = attributesManager.getSessionAttributes();
+
+  const gameState = sessionAttributes.gameState;
+  let speechOutput;
+
+  if (gameState === "STARTED") {
+    // User should say difficulty
+    speechOutput = requestAttributes.t("UNHANDLED_STARTED");
+  } else if (gameState === "PLAYING") {
+    // User should say a statement
+    // Doesn't actually happen in reality, already handled in statement picker handler
+    speechOutput = requestAttributes.t("UNHANDLED_PLAYING");
+  } else {
+    speechOutput = requestAttributes.t("UNHANDLED_OTHER");
+  }
+
+  return handlerInput.responseBuilder
+    .speak(speechOutput)
+    .reprompt(speechOutput)
+    .getResponse();
+};
+
 module.exports = {
   handleLaunch,
   handleReset,
@@ -255,4 +279,5 @@ module.exports = {
   handleYes,
   handleNo,
   handleStatementPick,
+  handleUnhandled,
 };

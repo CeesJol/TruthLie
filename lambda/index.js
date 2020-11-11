@@ -20,6 +20,7 @@ const {
   handleYes,
   handleNo,
   handleStatementPick,
+  handleUnhandled,
 } = require("./handlers/handlers");
 const { canHandle } = require("./handlers/canHandlers");
 
@@ -146,12 +147,7 @@ const UnhandledIntent = {
     return true;
   },
   handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t("CONTINUE_MESSAGE"))
-      .reprompt(requestAttributes.t("CONTINUE_MESSAGE"))
-      .getResponse();
+    return handleUnhandled(handlerInput);
   },
 };
 
