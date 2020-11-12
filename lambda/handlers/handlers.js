@@ -175,10 +175,17 @@ const handleStatementPick = async (handlerInput) => {
   const requestAttributes = attributesManager.getRequestAttributes();
   const sessionAttributes = attributesManager.getSessionAttributes();
 
-  const pickedStatement = parseInt(
+  const number = parseInt(
     Alexa.getSlotValue(handlerInput.requestEnvelope, "number"),
     10
   );
+  console.log("number:", number);
+  const ordinal = Alexa.getSlotValue(handlerInput.requestEnvelope, "ordinal");
+  console.log("ordinal:", ordinal);
+  let pickedStatement;
+  if (number) pickedStatement = number;
+  else pickedStatement = ordinal;
+  console.log("pickedStatement:", pickedStatement);
   const targetStatement = sessionAttributes.statement.lie;
   const explanation = sessionAttributes.statement.lieExplanation;
   sessionAttributes.gamesPlayed += 1;
