@@ -1,12 +1,13 @@
 const SPEECH_STATEMENTS =
   "Statement one is: %s Statement two is: %s And statement three is: %s Now, which one do you think is a lie?";
 const COMPLETED_ALL =
-  "You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?";
+  "Congratulations! You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?";
 
 module.exports = {
   translation: {
     SKILL_NAME: "Two Truths and a Lie Game",
-    EXIT_MESSAGE: "Thanks for playing!",
+    EXIT_MESSAGE:
+      "Thanks for playing! If you liked Two Truths and a Lie, please leave a review on the Alexa Skills Store.",
     FALLBACK_ENDED: `I can't help you with that.  I will tell two truths and  a lie and you try to tell which one is the lie. Would you like to play?`,
     FALLBACK_STARTED: `Please indicate which difficulty you want: easy or hard?`,
     FALLBACK_THINKING: `Say which of the three statements was a lie, or say 'repeat the statements'.`,

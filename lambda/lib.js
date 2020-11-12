@@ -16,6 +16,7 @@ const getNegativeStatement = () => {
     "That's an understandable choice.",
     "That's a very good attempt.",
     "That's a very reasonable guess.",
+    "Nice try, but that's not the answer.",
   ];
 
   return statements[Math.floor(Math.random() * statements.length)];
