@@ -1,5 +1,9 @@
 const { getStatement, getStatementLength } = require("../statements");
-const { getPositiveStatement, getNegativeStatement } = require("../lib");
+const {
+  getPositiveStatement,
+  getNegativeStatement,
+  initializeAttributes,
+} = require("../lib");
 const Alexa = require("ask-sdk");
 
 const handleLaunch = async (handlerInput) => {
@@ -15,23 +19,14 @@ const handleLaunch = async (handlerInput) => {
   }
 
   attributes = {
-    // Initialize attributes for first open
-    gamesPlayed: 420,
-    gameState: "ENDED",
-    debug: false,
-    indexes: {
-      easy: 0,
-      hard: 0,
-    },
+    ...initializeAttributes(),
     ...attributes,
   };
 
-  // Quick launch the game by skipping the "Would you like to play" question
-  // Just immediately ask which difficulty they want on launch
-  attributes.gameState = "STARTED";
-
   attributesManager.setSessionAttributes(attributes);
 
+  // Quick launch the game by skipping the "Would you like to play" question
+  // Just immediately ask which difficulty they want on launch
   let speechOutput;
   if (attributes.debug) {
     // This is a debug session
@@ -57,20 +52,12 @@ const handleReset = async (handlerInput) => {
   const requestAttributes = attributesManager.getRequestAttributes();
   const sessionAttributes = attributesManager.getSessionAttributes();
 
-  sessionAttributes.gamesPlayed = 0;
-  sessionAttributes.indexes = {
-    easy: 0,
-    hard: 0,
-  };
+  sessionAttributes.gameState = "RESET_REQUEST";
 
-  try {
-    attributesManager.setPersistentAttributes(sessionAttributes);
-    await attributesManager.savePersistentAttributes();
-  } catch (e) {}
-
+  let speechOutput = requestAttributes.t("RESET_CONFIRMATION_QUESTION");
   return handlerInput.responseBuilder
-    .speak(requestAttributes.t("RESET_SUCCESS_MESSAGE"))
-    .reprompt(requestAttributes.t("RESET_SUCCESS_MESSAGE"))
+    .speak(speechOutput)
+    .reprompt(speechOutput)
     .getResponse();
 };
 
@@ -99,7 +86,47 @@ const handleDifficulty = (handlerInput) => {
   console.log("statement:", statement);
 
   const speechOutput = requestAttributes.t(
-    "YES_REPROMPT",
+    "SAY_STATEMENTS",
+    statement.s1,
+    statement.s2,
+    statement.s3
+  );
+  const repromptOutput = requestAttributes.t(
+    "REPROMPT_STATEMENTS",
+    statement.s1,
+    statement.s2,
+    statement.s3
+  );
+  return handlerInput.responseBuilder
+    .speak(speechOutput)
+    .reprompt(repromptOutput)
+    .getResponse();
+};
+
+const handleYes = async (handlerInput) => {
+  const { attributesManager } = handlerInput;
+  const requestAttributes = attributesManager.getRequestAttributes();
+  const sessionAttributes = attributesManager.getSessionAttributes();
+
+  if (sessionAttributes.gameState === "RESET_REQUEST") {
+    let attributes = initializeAttributes();
+
+    attributesManager.setSessionAttributes(attributes);
+
+    try {
+      attributesManager.setPersistentAttributes(sessionAttributes);
+      await attributesManager.savePersistentAttributes();
+    } catch (e) {}
+
+    const speechOutput = requestAttributes.t("RESET_SUCCESS_MESSAGE");
+    return handlerInput.responseBuilder
+      .speak(speechOutput)
+      .reprompt(speechOutput)
+      .getResponse();
+  }
+
+  const speechOutput = requestAttributes.t(
+    "UNHANDLED_OTHER",
     statement.s1,
     statement.s2,
     statement.s3
@@ -110,63 +137,35 @@ const handleDifficulty = (handlerInput) => {
     .getResponse();
 };
 
-const handleYes = (handlerInput) => {
+const handleNo = async (handlerInput) => {
   const { attributesManager } = handlerInput;
   const requestAttributes = attributesManager.getRequestAttributes();
   const sessionAttributes = attributesManager.getSessionAttributes();
 
-  console.log(
-    "sessionAttributes.chosenDifficulty:",
-    sessionAttributes.chosenDifficulty
-  );
-  const chosenDifficulty = sessionAttributes.chosenDifficulty;
-  if (chosenDifficulty) {
-    // User already indicated a difficulty, don't ask again
-    let statement = getStatement(
-      chosenDifficulty,
-      sessionAttributes.indexes[chosenDifficulty]
-    );
+  if (sessionAttributes.gameState === "RESET_REQUEST") {
+    sessionAttributes.gameState = "STARTED";
 
-    sessionAttributes.gameState = "THINKING";
-    sessionAttributes.statement = statement;
-    console.log("statement:", statement);
+    try {
+      attributesManager.setPersistentAttributes(sessionAttributes);
+      await attributesManager.savePersistentAttributes();
+    } catch (e) {}
 
-    const speechOutput = requestAttributes.t(
-      "YES_REPROMPT",
-      statement.s1,
-      statement.s2,
-      statement.s3
-    );
+    const speechOutput = requestAttributes.t("RESET_CANCEL_MESSAGE");
     return handlerInput.responseBuilder
       .speak(speechOutput)
       .reprompt(speechOutput)
       .getResponse();
   }
 
-  // Does not happen with Quick launch...
-  sessionAttributes.gameState = "STARTED";
-
+  const speechOutput = requestAttributes.t(
+    "UNHANDLED_OTHER",
+    statement.s1,
+    statement.s2,
+    statement.s3
+  );
   return handlerInput.responseBuilder
-    .speak(requestAttributes.t("WHICH_DIFFICULTY_MESSAGE"))
-    .reprompt(requestAttributes.t("WHICH_DIFFICULTY_MESSAGE"))
-    .getResponse();
-};
-
-const handleNo = async (handlerInput) => {
-  const { attributesManager } = handlerInput;
-  const requestAttributes = attributesManager.getRequestAttributes();
-
-  const sessionAttributes = attributesManager.getSessionAttributes();
-
-  sessionAttributes.gameState = "ENDED";
-
-  try {
-    attributesManager.setPersistentAttributes(sessionAttributes);
-    await attributesManager.savePersistentAttributes();
-  } catch (e) {}
-
-  return handlerInput.responseBuilder
-    .speak(requestAttributes.t("EXIT_MESSAGE"))
+    .speak(speechOutput)
+    .reprompt(speechOutput)
     .getResponse();
 };
 

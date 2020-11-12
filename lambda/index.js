@@ -83,9 +83,10 @@ const HelpIntent = {
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
 
+    const speechOutput = requestAttributes.t("HELP_MESSAGE");
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t("HELP_MESSAGE"))
-      .reprompt(requestAttributes.t("HELP_REPROMPT"))
+      .speak(speechOutput)
+      .reprompt(speechOutput)
       .getResponse();
   },
 };
@@ -110,7 +111,10 @@ const NoIntent = {
 
 const ResetIntent = {
   canHandle(handlerInput) {
-    return canHandle(handlerInput, "ResetIntent");
+    return (
+      Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === "ResetIntent"
+    );
   },
   async handle(handlerInput) {
     return handleReset(handlerInput);

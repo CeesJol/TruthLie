@@ -22,7 +22,20 @@ const getNegativeStatement = () => {
   return statements[Math.floor(Math.random() * statements.length)];
 };
 
+const initializeAttributes = () => {
+  return {
+    gamesPlayed: 0,
+    gameState: "STARTED",
+    debug: false,
+    indexes: {
+      easy: 0,
+      hard: 0,
+    },
+  };
+};
+
 module.exports = {
   getPositiveStatement,
   getNegativeStatement,
+  initializeAttributes,
 };
