@@ -195,7 +195,8 @@ const StatementPickIntent = {
     return (
       isCurrentlyPlaying &&
       Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest" &&
-      Alexa.getIntentName(handlerInput.requestEnvelope) === "NumberGuessIntent"
+      Alexa.getIntentName(handlerInput.requestEnvelope) ===
+        "StatementPickIntent"
     );
   },
   async handle(handlerInput) {

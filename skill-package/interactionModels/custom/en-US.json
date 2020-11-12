@@ -33,14 +33,21 @@
 									"samples": []
 							},
 							{
-									"name": "NumberGuessIntent",
+									"name": "StatementPickIntent",
 									"slots": [
 											{
 													"name": "number",
 													"type": "AMAZON.NUMBER"
+											},
+											{
+													"name": "ordinal",
+													"type": "AMAZON.Ordinal"
 											}
 									],
 									"samples": [
+											"the {ordinal}",
+											"the {ordinal} one",
+											"the {ordinal}  statement",
 											"{number}",
 											"is it {number}",
 											"how about {number}",
