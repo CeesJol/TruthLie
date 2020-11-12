@@ -45,6 +45,8 @@
 											}
 									],
 									"samples": [
+											"the {ordinal} statement",
+											"the {ordinal} one",
 											"{number}",
 											"is it {number}",
 											"how about {number}",
@@ -90,19 +92,6 @@
 											"what were the statements again",
 											"could you repeat them",
 											"repeat the statements"
-									]
-							},
-							{
-									"name": "StatementPickOrdinalIntent",
-									"slots": [
-											{
-													"name": "ordinal",
-													"type": "AMAZON.Ordinal"
-											}
-									],
-									"samples": [
-											"the {ordinal} one",
-											"the {ordinal} statement"
 									]
 							}
 					],
