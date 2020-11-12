@@ -1,5 +1,7 @@
 const SPEECH_STATEMENTS =
   "Statement one is: %s Statement two is: %s And statement three is: %s Now, which one do you think is a lie?";
+const COMPLETED_ALL =
+  "You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?";
 
 module.exports = {
   translation: {
@@ -9,8 +11,7 @@ module.exports = {
     FALLBACK_STARTED: `Please indicate which difficulty you want: easy or hard?`,
     FALLBACK_THINKING: `Say which of the three statements was a lie, or say 'repeat the statements'.`,
     GUESS_CORRECT_MESSAGE: `%s Statement %s was indeed a lie! %s Here are the next three statements. ${SPEECH_STATEMENTS}`,
-    GUESS_CORRECT_MESSAGE_COMPLETED_ALL:
-      "%s Statement %s was indeed a lie! %s You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?",
+    GUESS_CORRECT_MESSAGE_COMPLETED_ALL: `%s Statement %s was indeed a lie! %s ${COMPLETED_ALL}`,
     LAUNCH_MESSAGE_FIRST_TIME:
       "Welcome to Two Truths and a Lie. In two truths and a lie, I will tell you three statements: two are true, and one is a lie. It is on you to tell which one is a lie. Say a difficulty level, easy or hard, to get started!",
     LAUNCH_MESSAGE:
@@ -18,8 +19,7 @@ module.exports = {
     LAUNCH_MESSAGE_DEBUG:
       "Welcome debugger. Say a difficulty level, easy or hard, to get started!",
     INCORRECT_MESSAGE: `%s Statement %s was not a lie. Statement %s was a lie: %s Here are the next three statements. ${SPEECH_STATEMENTS}`,
-    INCORRECT_MESSAGE_COMPLETED_ALL:
-      "%s Statement %s was not a lie. Statement %s was a lie: %s You have completed all questions for this difficulty. The difficulty levels are easy and hard. Which difficulty would you like to try next?",
+    INCORRECT_MESSAGE_COMPLETED_ALL: `%s Statement %s was not a lie. Statement %s was a lie: %s ${COMPLETED_ALL}`,
     // REPEAT
     REPEAT_STATEMENTS:
       "The statements were: %s %s %s Which one do you think is a lie?",

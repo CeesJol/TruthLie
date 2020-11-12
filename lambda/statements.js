@@ -135,7 +135,10 @@ const STATEMENTS = {
 };
 
 const getStatement = (difficulty, index) => {
-  let result = STATEMENTS[difficulty][index];
+  let result;
+  try {
+    result = STATEMENTS[difficulty][index];
+  } catch (e) {}
 
   if (!result) {
     // If user has played all statements of this difficulty, pick a random one
