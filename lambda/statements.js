@@ -153,6 +153,7 @@ const STATEMENTS = {
       /**
        * Source
        * https://kidsactivitiesblog.com/76701/50-random-facts/
+       * https://www.historytoday.com/archive/months-past/anglo-zanzibar-war#:~:text=The%20Anglo%2DZanzibar%20War%20has,from%20the%20outbreak%20of%20hostilities.
        *
        */
       s1: "One of the ingredients needed to make dynamite is peanuts.",
