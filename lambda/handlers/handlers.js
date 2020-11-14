@@ -209,40 +209,6 @@ const handleStatementPick = async (handlerInput) => {
     attributesManager.setPersistentAttributes(sessionAttributes);
     await attributesManager.savePersistentAttributes();
   } catch (e) {}
-  
-  // Add APL directive to response
-    if (util.supportsAPL(handlerInput)) {
-        const {Viewport} = handlerInput.requestEnvelope.context;
-        const resolution = Viewport.pixelWidth + 'x' + Viewport.pixelHeight;
-        handlerInput.responseBuilder.addDirective({
-            type: 'Alexa.Presentation.APL.RenderDocument',
-            version: '1.4',
-            document: constants.APL.launchDoc,
-            datasources: {
-                launchData: {
-                    type: 'object',
-                    properties: {
-                        headerTitle: handlerInput.t('SKILL_NAME'),
-                        mainText: isBirthday ? sessionAttributes['age'] : handlerInput.t('DAYS_LEFT_MSG', {name: '', count: sessionAttributes['daysLeft']}),
-                        hintString: handlerInput.t('LAUNCH_HINT_MSG'),
-                        // logoImage: isBirthday ? null : Viewport.pixelWidth > 480 ? util.getS3PreSignedUrl('Media/full_icon_512.png') : util.getS3PreSignedUrl('Media/full_icon_108.png'),
-                        // backgroundImage: isBirthday ? util.getS3PreSignedUrl('Media/cake_'+resolution+'.png') : util.getS3PreSignedUrl('Media/papers_'+resolution+'.png'),
-                        backgroundOpacity: isBirthday ? "1" : "0.5"
-                    },
-                    transformers: [{
-                        inputPath: 'hintString',
-                        transformer: 'textToHint',
-                    }]
-                }
-            }
-        });
-    }
-
-    // Add home card to response
-    // If you're using an Alexa Hosted Skill the images below will expire
-    // and could not be shown in the card. You should replace them with static images
-    handlerInput.responseBuilder.withStandardCard(
-        handlerInput.t('SKILL_NAME'));
 
   if (pickedStatement !== targetStatement) {
     // Incorrect pick
