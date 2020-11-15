@@ -20,6 +20,9 @@ const handleLaunch = async (handlerInput) => {
     ...attributes,
   };
 
+  // Ask user which difficulty they want
+  attributes.gameState = "STARTED";
+
   attributesManager.setSessionAttributes(attributes);
 
   // Quick launch the game by skipping the "Would you like to play" question
