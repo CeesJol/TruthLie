@@ -85,7 +85,7 @@ const handleDifficulty = (handlerInput) => {
   sessionAttributes.statement = statement;
   console.log("statement:", statement);
 
-  addApl(handlerInput, requestAttributes, statement, false, {});
+  addApl(handlerInput, requestAttributes, statement, {});
 
   const { s1, s2, s3 } = statement;
   const speechOutput = requestAttributes.t("SAY_STATEMENTS", s1, s2, s3);
@@ -196,7 +196,7 @@ const handleStatementPick = async (handlerInput) => {
   const feedback = getFeedbackStatement(pickedStatement === targetStatement);
   const { s1, s2, s3 } = statement;
 
-  addApl(handlerInput, requestAttributes, statement, completedAll, feedback);
+  addApl(handlerInput, requestAttributes, statement, feedback);
 
   if (pickedStatement !== targetStatement) {
     // Incorrect pick

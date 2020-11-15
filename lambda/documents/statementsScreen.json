@@ -74,13 +74,6 @@
 							"direction": "column",
 							"items": [
 									{
-											"type": "Image",
-											"source": "${payload.launchData.properties.backgroundImage}",
-											"scale": "best-fill",
-											"width": "100vw",
-											"height": "100vh"
-									},
-									{
 											"type": "Container",
 											"position": "absolute",
 											"width": "90vw",
