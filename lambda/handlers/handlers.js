@@ -1,9 +1,6 @@
 const { getStatement, getStatementLength } = require("../statements");
-const {
-  getPositiveStatement,
-  getNegativeStatement,
-  initializeAttributes,
-} = require("../lib");
+const { getFeedbackStatement, initializeAttributes } = require("../lib");
+const { addApl } = require("../apl");
 const Alexa = require("ask-sdk");
 
 const handleLaunch = async (handlerInput) => {
@@ -85,18 +82,11 @@ const handleDifficulty = (handlerInput) => {
   sessionAttributes.statement = statement;
   console.log("statement:", statement);
 
-  const speechOutput = requestAttributes.t(
-    "SAY_STATEMENTS",
-    statement.s1,
-    statement.s2,
-    statement.s3
-  );
-  const repromptOutput = requestAttributes.t(
-    "REPROMPT_STATEMENTS",
-    statement.s1,
-    statement.s2,
-    statement.s3
-  );
+  addApl(handlerInput, requestAttributes, statement, false, {});
+
+  const { s1, s2, s3 } = statement;
+  const speechOutput = requestAttributes.t("SAY_STATEMENTS", s1, s2, s3);
+  const repromptOutput = requestAttributes.t("REPROMPT_STATEMENTS", s1, s2, s3);
   return handlerInput.responseBuilder
     .speak(speechOutput)
     .reprompt(repromptOutput)
@@ -125,12 +115,7 @@ const handleYes = async (handlerInput) => {
       .getResponse();
   }
 
-  const speechOutput = requestAttributes.t(
-    "UNHANDLED_OTHER",
-    statement.s1,
-    statement.s2,
-    statement.s3
-  );
+  const speechOutput = requestAttributes.t("UNHANDLED_OTHER");
   return handlerInput.responseBuilder
     .speak(speechOutput)
     .reprompt(speechOutput)
@@ -157,12 +142,7 @@ const handleNo = async (handlerInput) => {
       .getResponse();
   }
 
-  const speechOutput = requestAttributes.t(
-    "UNHANDLED_OTHER",
-    statement.s1,
-    statement.s2,
-    statement.s3
-  );
+  const speechOutput = requestAttributes.t("UNHANDLED_OTHER");
   return handlerInput.responseBuilder
     .speak(speechOutput)
     .reprompt(speechOutput)
@@ -210,17 +190,22 @@ const handleStatementPick = async (handlerInput) => {
     await attributesManager.savePersistentAttributes();
   } catch (e) {}
 
+  const feedback = getFeedbackStatement(pickedStatement === targetStatement);
+  const { s1, s2, s3 } = statement;
+
+  addApl(handlerInput, requestAttributes, statement, completedAll, feedback);
+
   if (pickedStatement !== targetStatement) {
     // Incorrect pick
     const speechOutput = requestAttributes.t(
       "INCORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
-      getNegativeStatement(),
+      feedback.text,
       pickedStatement.toString(),
       targetStatement,
       explanation,
-      statement.s1,
-      statement.s2,
-      statement.s3
+      s1,
+      s2,
+      s3
     );
     return handlerInput.responseBuilder
       .speak(speechOutput)
@@ -230,12 +215,12 @@ const handleStatementPick = async (handlerInput) => {
     // Correct pick
     const speechOutput = requestAttributes.t(
       "GUESS_CORRECT_MESSAGE" + (completedAll ? "_COMPLETED_ALL" : ""),
-      getPositiveStatement(),
+      feedback.text,
       pickedStatement.toString(),
       explanation,
-      statement.s1,
-      statement.s2,
-      statement.s3
+      s1,
+      s2,
+      s3
     );
     return handlerInput.responseBuilder
       .speak(speechOutput)
@@ -282,12 +267,8 @@ const handleRepeatStatements = (handlerInput) => {
 
   const statement = sessionAttributes.statement;
 
-  const speechOutput = requestAttributes.t(
-    "REPEAT_STATEMENTS",
-    statement.s1,
-    statement.s2,
-    statement.s3
-  );
+  const { s1, s2, s3 } = statement;
+  const speechOutput = requestAttributes.t("REPEAT_STATEMENTS", s1, s2, s3);
 
   return handlerInput.responseBuilder
     .speak(speechOutput)
