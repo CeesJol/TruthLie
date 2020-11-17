@@ -40,6 +40,12 @@ const initializeAttributes = () => {
 };
 
 const getReadableStatement = (statement) => {
+  if (
+    !statement ||
+    (Object.keys(statement).length === 0 && statement.constructor === Object)
+  ) {
+    return "";
+  }
   const { s1, s2, s3 } = statement;
   return `1. ${s1} <br /> 2. ${s2} <br /> 3. ${s3}`;
 };

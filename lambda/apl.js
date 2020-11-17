@@ -18,7 +18,9 @@ const addApl = (handlerInput, requestAttributes, statement, feedback) => {
             headerTitle: requestAttributes.t("SKILL_NAME"),
             feedbackText: feedback.aplText || "",
             feedbackColor: feedback.positive ? "green" : "red",
-            statementsText: getReadableStatement(statement),
+            statementsText:
+              getReadableStatement(statement) ||
+              "Which difficulty would you like to try next?",
           },
         },
       },
