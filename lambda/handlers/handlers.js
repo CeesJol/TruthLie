@@ -107,7 +107,7 @@ const handleYes = async (handlerInput) => {
     attributesManager.setSessionAttributes(attributes);
 
     try {
-      attributesManager.setPersistentAttributes(sessionAttributes);
+      attributesManager.setPersistentAttributes(attributes);
       await attributesManager.savePersistentAttributes();
     } catch (e) {}
 
